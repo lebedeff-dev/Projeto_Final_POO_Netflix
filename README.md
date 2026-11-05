@@ -1,4 +1,4 @@
-﻿<p align="center">
+<p align="center">
   <img src="assets/netflix-logo.png" alt="Logo da Netflix" width="300">
 </p>
 
