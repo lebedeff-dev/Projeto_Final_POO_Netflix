@@ -1,6 +1,6 @@
 @echo off
 rem =====================================================================
-rem  Gera o arquivo V2\Netflix.jar (a "build" que o grupo usa).
+rem  Gera o arquivo Netflix.jar (a "build" que o grupo usa).
 rem  So precisa rodar de novo se alguem mudar o codigo em src\.
 rem  Requer o JDK instalado (comando javac e jar).
 rem =====================================================================
@@ -60,5 +60,5 @@ if errorlevel 1 (
 
 rmdir /s /q build
 echo.
-echo Pronto! Gerado: V2\Netflix.jar
+echo Pronto! Gerado: Netflix.jar
 pause

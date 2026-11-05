@@ -1,11 +1,11 @@
-# Documentação do Projeto Netflix (POO) – V2
+# Documentação do Projeto Netflix (POO) – versão principal
 
-> Versão 2 da documentação. Mesmo estilo da V1 (cada classe explicada linha a linha), atualizada com o que mudou:
+> Versão 2 da documentação. Mesmo estilo da primeira versão (cada classe explicada linha a linha), atualizada com o que mudou:
 > **build pronta (`Netflix.jar`)**, **tela de conexão**, **banco criado sozinho**, **relatório da rotina principal** e **código mais simples de explicar**.
 
 ## Sumário
 
-0. [O que mudou da V1 para a V2](#0-o-que-mudou-da-v1-para-a-v2)
+0. [O que mudou da primeira versão para a versão principal](#0-o-que-mudou-da-primeira-versão-para-a-versão-principal)
 1. [Visão geral](#1-visão-geral)
 2. [Banco de dados (`sql/netflix.sql`)](#2-banco-de-dados-sqlnetflixsql)
 3. [Pacote `util`](#3-pacote-util)
@@ -21,12 +21,12 @@
 
 ---
 
-## 0. O que mudou da V1 para a V2
+## 0. O que mudou da primeira versão para a versão principal
 
-| Problema na V1 | Como a V2 resolve | Onde no código |
+| Problema na primeira versão | Como a versão principal resolve | Onde no código |
 |---|---|---|
-| **Faltava o relatório** da rotina principal (a proposta pede JOIN **e** relatório; a V1 só tinha a tabela do JOIN) | Nova tela **Relatório: visualizações por período**, com filtro de datas e de perfil, totais (concluídas, em andamento, minutos) e botão **Salvar .txt** | `TelaRelatorio`, `RelatorioController`, `HistoricoVisualizacaoDAO.listarPorPeriodo()` |
-| Não tinha **build**: cada um precisava compilar | `Netflix.jar` pronto (com o driver do MySQL e o script SQL dentro). Dois cliques e abre | `V2/Netflix.jar`, `Netflix/build.bat` |
+| **Faltava o relatório** da rotina principal (a proposta pede JOIN **e** relatório; a primeira versão só tinha a tabela do JOIN) | Nova tela **Relatório: visualizações por período**, com filtro de datas e de perfil, totais (concluídas, em andamento, minutos) e botão **Salvar .txt** | `TelaRelatorio`, `RelatorioController`, `HistoricoVisualizacaoDAO.listarPorPeriodo()` |
+| Não tinha **build**: cada um precisava compilar | `Netflix.jar` pronto (com o driver do MySQL e o script SQL dentro). Dois cliques e abre | `Netflix.jar`, `Netflix/build.bat` |
 | Tinha que abrir o **Workbench** e rodar o script na mão | O sistema cria o banco **sozinho** na primeira vez. O menu tem **Restaurar dados de exemplo** | `util/CriadorBanco` |
 | A senha do MySQL ficava **escrita no código** (editar e recompilar) | **Tela de conexão** ao abrir; os dados ficam salvos em `config.properties` | `TelaConexao`, `ConexaoController`, `ConnectionFactory` |
 | Contas e Perfis mostravam **só o número da FK** ("Plano (id) = 3"), o que a proposta pede para evitar | As tabelas mostram **"3 - Premium"** e **"1 - ana.silva@email.com"** (INNER JOIN em `ContaDAO` e `PerfilDAO`) | `ContaDAO.listar`, `PerfilDAO.listar` |
@@ -34,7 +34,7 @@
 | Combos de FK **não atualizavam** (cadastrar um plano e ele não aparecer na tela de Conta) | Combos recarregam junto com a tabela, depois de cada ação (`carregarCombos()`) | `TelaCrud.recarregar()` |
 | `ConnectionFactory` lançava `RuntimeException` | Lança `SQLException`. Assim o erro "MySQL desligado" cai no mesmo `catch (SQLException)` dos controllers | `ConnectionFactory.getConnection()` |
 
-O **modelo do banco é o mesmo da V1** (5 tabelas, mesmas colunas e dados de exemplo).
+O **modelo do banco é o mesmo da primeira versão** (5 tabelas, mesmas colunas e dados de exemplo).
 
 ---
 
@@ -80,7 +80,7 @@ View  -->  Controller  -->  DAO  -->  MySQL
 ### 1.4 Estrutura de pastas
 
 ```
-V2/
+Projeto_Final_POO_Netflix/
   Netflix.jar                  (BUILD PRONTA: dois cliques para abrir)
   Abrir Netflix.bat            (alternativa: abre o jar e mostra erros, se houver)
   DOCUMENTACAO.md              (este arquivo)
@@ -122,7 +122,7 @@ V2/
 
 ## 2. Banco de dados (`sql/netflix.sql`)
 
-O script cria o banco `netflix`, 5 tabelas (um recorte das 13 do modelo lógico do grupo) e dados de teste. **Na V2 ninguém precisa rodá-lo na mão:** o sistema o executa sozinho na primeira vez (seção 3.2). Ele continua podendo ser aberto no Workbench.
+O script cria o banco `netflix`, 5 tabelas (um recorte das 13 do modelo lógico do grupo) e dados de teste. **Na versão principal ninguém precisa rodá-lo na mão:** o sistema o executa sozinho na primeira vez (seção 3.2). Ele continua podendo ser aberto no Workbench.
 
 ### 2.1 Como as tabelas se relacionam
 
@@ -216,9 +216,9 @@ Está comentada (`--`) para não rodar sozinha; copie e execute no Workbench par
 
 Classes de apoio usadas por várias camadas.
 
-### 3.1 `ConnectionFactory` (mudou na V2)
+### 3.1 `ConnectionFactory` (mudou na versão principal)
 
-**Para que serve:** é a "fábrica" de conexões JDBC. Os dados de acesso (servidor, porta, usuário, senha) ficam em **um único lugar**. Os DAOs só chamam `ConnectionFactory.getConnection()`. **Na V2 esses dados não ficam mais fixos no código:** vêm da `TelaConexao` e são salvos no `config.properties`.
+**Para que serve:** é a "fábrica" de conexões JDBC. Os dados de acesso (servidor, porta, usuário, senha) ficam em **um único lugar**. Os DAOs só chamam `ConnectionFactory.getConnection()`. **Na versão principal esses dados não ficam mais fixos no código:** vêm da `TelaConexao` e são salvos no `config.properties`.
 
 **Linha a linha**
 
@@ -229,7 +229,7 @@ Classes de apoio usadas por várias camadas.
 - `private static final String ARQUIVO_CONFIG = "config.properties";`: nome do arquivo de configuração, criado ao lado do `Netflix.jar`.
 - `private static String servidor = "localhost"; porta = 3306; usuario = "root"; senha = "";`: valores **padrão**. Não são `final` porque mudam quando o usuário conecta.
 - `private ConnectionFactory() { }`: construtor **privado**: a classe só tem métodos estáticos, ninguém precisa dar `new`.
-- `public static Connection getConnection() throws SQLException`: abre a conexão com o banco `netflix`. `DriverManager.getConnection(montarUrl(BANCO), usuario, senha)` procura o driver que entende a URL e conecta. Se o MySQL estiver desligado ou a senha errada, lança `SQLException`, **que o DAO repassa e o Controller captura** (na V1 virava `RuntimeException`; agora o caminho do erro é o mesmo de qualquer erro de banco).
+- `public static Connection getConnection() throws SQLException`: abre a conexão com o banco `netflix`. `DriverManager.getConnection(montarUrl(BANCO), usuario, senha)` procura o driver que entende a URL e conecta. Se o MySQL estiver desligado ou a senha errada, lança `SQLException`, **que o DAO repassa e o Controller captura** (na primeira versão virava `RuntimeException`; agora o caminho do erro é o mesmo de qualquer erro de banco).
 - `getConnectionServidor()`: conecta ao **servidor** sem escolher banco (URL termina em `/`). É usada para criar o banco `netflix` quando ele ainda não existe.
 - `montarUrl(String banco)`: monta `jdbc:mysql://servidor:porta/banco?useSSL=false&allowPublicKeyRetrieval=true&connectionTimeZone=LOCAL&forceConnectionTimeZoneToSession=false`. `useSSL=false` desliga a criptografia (desnecessária localmente), `allowPublicKeyRetrieval=true` evita um erro comum de login no MySQL 8, `connectionTimeZone=LOCAL` faz o driver usar o fuso do próprio computador, então o horário digitado é sempre o horário gravado e mostrado (com o fuso fixo em São Paulo, um computador em outro fuso via 20:00 como 23:00).
 - `configurar(...)`: troca os quatro valores (chamado pelo `ConexaoController`).
@@ -239,7 +239,7 @@ Classes de apoio usadas por várias camadas.
 
 > **Por que não tem mais `Class.forName("com.mysql.cj.jdbc.Driver")`?** Desde o JDBC 4 o driver se registra sozinho quando o `.jar` está no classpath (arquivo `META-INF/services/java.sql.Driver` dentro do driver). O exemplo do professor usa `Class.forName` porque é o jeito antigo; os dois funcionam.
 
-### 3.2 `CriadorBanco` (novo na V2)
+### 3.2 `CriadorBanco` (novo na versão principal)
 
 **Para que serve:** criar o banco **sozinho**, rodando o `netflix.sql` que vai dentro do `Netflix.jar`. Com isso ninguém do grupo precisa abrir o Workbench.
 
@@ -349,7 +349,7 @@ DAO (Data Access Object) é a **única camada que escreve SQL**. Cada DAO cuida 
 
 ### 5.3 `ContaDAO` (mudou: listar com INNER JOIN)
 
-Mesma estrutura. `inserir`/`atualizar`/`eliminar` iguais à V1 (`ps.setInt(1, c.getIdPlano())` grava a FK; `setTimestamp(6, Timestamp.valueOf(...))` para a data com hora). **`listar()` agora faz JOIN**:
+Mesma estrutura. `inserir`/`atualizar`/`eliminar` iguais à primeira versão (`ps.setInt(1, c.getIdPlano())` grava a FK; `setTimestamp(6, Timestamp.valueOf(...))` para a data com hora). **`listar()` agora faz JOIN**:
 
 ```sql
 SELECT c.id_conta, c.id_plano, c.email, c.senha_hash, c.telefone, c.pais,
@@ -368,7 +368,7 @@ ORDER BY c.id_conta
 
 ### 5.5 `TituloDAO`
 
-Igual à V1, com cuidado para `duracao_minutos` NULL:
+Igual à primeira versão, com cuidado para `duracao_minutos` NULL:
 - `preencher(ps, t)`: método auxiliar que preenche os 9 `?` comuns ao INSERT e ao UPDATE. Para a duração: `if (t.getDuracaoMinutos() == null) { ps.setNull(6, Types.INTEGER); } else { ps.setInt(6, t.getDuracaoMinutos()); }`. `setInt` não aceita `null`, por isso `setNull` informando o tipo SQL.
 - `listar`: `int duracao = rs.getInt("duracao_minutos"); t.setDuracaoMinutos(rs.wasNull() ? null : duracao);`. `getInt` devolve 0 quando é NULL; `wasNull()` diz se o último valor lido era NULL.
 
@@ -387,7 +387,7 @@ Igual à V1, com cuidado para `duracao_minutos` NULL:
   INNER JOIN plano pl ON pl.id_plano = c.id_plano
   ```
   Os apelidos `nome_perfil`, `nome_titulo` e `nome_plano` são necessários porque perfil, título e plano têm uma coluna `nome`. O JOIN com `conta` e `plano` mostra, para cada visualização, **de qual conta e de qual plano** é o perfil (perfil → conta → plano).
-- `inserir`, `atualizar`, `eliminar`: iguais à V1. Gravam as 2 FKs, as datas com `Timestamp.valueOf`, minuto, concluído e dispositivo (os nomes não são gravados).
+- `inserir`, `atualizar`, `eliminar`: iguais à primeira versão. Gravam as 2 FKs, as datas com `Timestamp.valueOf`, minuto, concluído e dispositivo (os nomes não são gravados).
 - **`listarComNomes()`**: `SELECT_COM_NOMES + "ORDER BY h.data_ultima_visualizacao DESC"` (mais recentes primeiro). É o **Read** do CRUD principal e a **consulta obrigatória com JOIN**.
 - **`listarPorPeriodo(dataInicial, dataFinal, idPerfil)` (novo, do relatório):**
   - `String sql = SELECT_COM_NOMES + "WHERE DATE(h.data_inicio) BETWEEN ? AND ? ";`: `DATE(...)` tira a hora do DATETIME; `BETWEEN` inclui as duas pontas.
@@ -414,7 +414,7 @@ Sempre nesta ordem: (1) recebe `String`; (2) valida e converte com o `Conversor`
 - `listar()`: `try { return dao.listar(); } catch (SQLException e) { throw new RuntimeException("Erro ao listar planos: " + ..., e); }`. Como `listar` devolve uma **lista** (não uma mensagem), o erro sobe como `RuntimeException` e a `TelaCrud.recarregar()` mostra.
 - `inserir(String nome, String valorMensal, String qualidadeMaxima, String telas, String permiteDownload)`: `dao.inserir(montar(...)); return "Plano inserido com sucesso!";` (não recebe descrição: ela é gerada).
   - `catch (IllegalArgumentException e) { return e.getMessage(); }`: erro de **validação** (Conversor), antes do banco.
-  - `catch (SQLException e) { return "Erro no banco de dados: " + e.getMessage(); }`: erro do **banco**, inclusive MySQL desligado (na V2 a `ConnectionFactory` lança `SQLException`).
+  - `catch (SQLException e) { return "Erro no banco de dados: " + e.getMessage(); }`: erro do **banco**, inclusive MySQL desligado (na versão principal a `ConnectionFactory` lança `SQLException`).
 - `atualizar(String id, ...)`: `Conversor.paraId(id)` (nada selecionado → mensagem), `montar(...)`, `p.setIdPlano(idPlano)`, `dao.atualizar(p)`.
 - `eliminar(String id)`: se a FK impedir, devolve "Não foi possível remover (o plano pode estar em uso por uma conta)".
 - `gerarDescricao(String telas, String qualidadeMaxima)` (público): **regra de negócio**. Converte `telas` em `int` (se for inválido ou menor que 1, devolve `""`), escolhe o texto do número (`"Uma tela"`, `"Duas telas"`, `"Três telas"`, `"Quatro telas"` ou `n + " telas"`) e devolve `telasTexto + ", qualidade " + qualidadeMaxima`. É chamado pela tela (para mostrar ao vivo) e por `montar(...)` (para gravar).
@@ -492,7 +492,7 @@ A View só **captura dados** e **mostra resultados**. Nenhum botão tem SQL ou r
 ### 7.4 `TelaPrincipal` (menu)
 
 - Seis `JButton`, numerados na ordem da apresentação: 1. Planos, 2. Contas, 3. Perfis, 4. Títulos, 5. Histórico de Visualização, e **Restaurar dados de exemplo**. O Relatório não tem botão no menu: é aberto pelo botão **Relatório** da tela de Histórico.
-- `btnPlanos.addActionListener(e -> Navegador.ir(this, new TelaPlano()));`: cada clique **cria** a tela nova, mostra no mesmo lugar com fade-in e fecha a atual (ver `Navegador` abaixo). A tela se chama **Início** e tem no topo a `BarraNavegacao`, com o botão **Restaurar dados** no canto direito. (Na V1 isso usava `Supplier<JFrame>` e `TelaPlano::new`; agora é direto.)
+- `btnPlanos.addActionListener(e -> Navegador.ir(this, new TelaPlano()));`: cada clique **cria** a tela nova, mostra no mesmo lugar com fade-in e fecha a atual (ver `Navegador` abaixo). A tela se chama **Início** e tem no topo a `BarraNavegacao`, com o botão **Restaurar dados** no canto direito. (Na primeira versão isso usava `Supplier<JFrame>` e `TelaPlano::new`; agora é direto.)
 - `restaurar()`: pede confirmação (`showConfirmDialog`) e chama `conexaoController.restaurarDadosExemplo()`.
 - `setDefaultCloseOperation(EXIT_ON_CLOSE)`: fechar o menu encerra o programa.
 
@@ -503,7 +503,7 @@ A View só **captura dados** e **mostra resultados**. Nenhum botão tem SQL ou r
 - O fade-in é um **véu** (`glass pane` do `JFrame`) com a cor de fundo da tela, pintado por cima do conteúdo; um `javax.swing.Timer` (16 ms) diminui a opacidade em 9 passos (~150 ms) até o véu sumir e a tela voltar a receber cliques.
 - Por que não `Window.setOpacity`? Ele lança `IllegalComponentStateException` em janela com barra de título do Windows.
 - Como só existe uma janela por vez, **fechar no X encerra o programa** (`EXIT_ON_CLOSE`) em todas as telas.
-- A V2 tem a **mesma lógica de telas** da versão visual; a diferença é só o visual (a versão visual usa `Tema`, capas, cartões e botões desenhados).
+- A versão principal tem a **mesma lógica de telas** da versão visual; a diferença é só o visual (a versão visual usa `Tema`, capas, cartões e botões desenhados).
 
 ### 7.5 `TelaCrud` (tela base, `abstract`)
 
@@ -568,7 +568,7 @@ Todas têm a mesma estrutura:
 
 **`TelaPlano`: descrição automática.** A descrição não é digitada. A tela guarda os dois combos, o de telas simultâneas (`comboTelas`, com 1, 2 e 4) e o de qualidade (`comboQualidade`), em atributos e liga os dois a `atualizarDescricao()` com `addActionListener(e -> atualizarDescricao())` (também dispara quando o código seleciona o valor ao clicar numa linha da tabela). `atualizarDescricao()` chama `controller.gerarDescricao(...)` e coloca o resultado no campo "Descrição (automática)", que é `setEditable(false)`. A regra de como o texto é montado fica no Controller (MVC).
 
-> **O que sumiu da `TelaHistorico` na V2:** as duas colunas escondidas com os IDs e a sobrescrita de `aoSelecionar()`. Elas existiam porque a tabela mostrava só "Ana" e o combo tinha "1 - Ana". Agora os dois mostram "1 - Ana", então o `aoSelecionar()` padrão da `TelaCrud` resolve.
+> **O que sumiu da `TelaHistorico` na versão principal:** as duas colunas escondidas com os IDs e a sobrescrita de `aoSelecionar()`. Elas existiam porque a tabela mostrava só "Ana" e o combo tinha "1 - Ana". Agora os dois mostram "1 - Ana", então o `aoSelecionar()` padrão da `TelaCrud` resolve.
 
 ### 7.7 `TelaRelatorio` (nova: relatório da rotina principal)
 
@@ -737,10 +737,10 @@ JFrame <- TelaPrincipal, TelaConexao, TelaRelatorio   (direto, não são cadastr
 
 ## 10. Como gerar a build (`Netflix.jar`)
 
-Só é preciso se alguém **mudar o código**. O jar pronto já está em `V2/Netflix.jar`.
+Só é preciso se alguém **mudar o código**. O jar pronto já está em `Netflix.jar`.
 
-- **Windows:** dois cliques em `V2/Netflix/build.bat`.
-- **Linux/macOS:** `bash V2/Netflix/build.sh`.
+- **Windows:** dois cliques em `Netflix/build.bat`.
+- **Linux/macOS:** `bash Netflix/build.sh`.
 
 O que o script faz (cada passo está comentado nele):
 
@@ -764,7 +764,7 @@ Resultado: um único arquivo (~2,6 MB) com nossas classes, o driver e o script S
 
 ### 11.2 Abrir o sistema
 
-1. Dê dois cliques em `V2/Netflix.jar` (ou em `V2/Abrir Netflix.bat`, que mostra mensagens de erro se algo faltar).
+1. Dê dois cliques em `Netflix.jar` (ou em `Abrir Netflix.bat`, que mostra mensagens de erro se algo faltar).
 2. Na **tela de conexão**, confira servidor `localhost`, porta `3306`, usuário `root`, digite a **senha do seu MySQL** e clique em **Conectar**.
 3. Na primeira vez o sistema cria o banco `netflix` com os dados de exemplo. Os dados ficam salvos em `config.properties` e na próxima vez a tela já vem preenchida.
 4. Abre o **menu principal**.
@@ -876,7 +876,7 @@ Cada aluno responde **2 perguntas de 0,5 ponto**, individualmente, sobre **o có
 | Pergunta | Resposta |
 |---|---|
 | Por que existe a `ConnectionFactory`? | Concentra os dados de conexão em um lugar; os DAOs só chamam `getConnection()`. |
-| Onde fica a senha do MySQL na V2? | Não fica no código: a `TelaConexao` pede, a `ConnectionFactory` guarda nos atributos estáticos e grava no `config.properties` (`Properties.store`). Na próxima vez é lida com `Properties.load`. |
+| Onde fica a senha do MySQL na versão principal? | Não fica no código: a `TelaConexao` pede, a `ConnectionFactory` guarda nos atributos estáticos e grava no `config.properties` (`Properties.store`). Na próxima vez é lida com `Properties.load`. |
 | Por que o construtor da `ConnectionFactory` é `private`? | Só tem métodos `static`; impede `new ConnectionFactory()`. |
 | Onde o driver é carregado, se não tem `Class.forName`? | Desde o JDBC 4 o `DriverManager` carrega sozinho o driver que está no classpath (arquivo `META-INF/services/java.sql.Driver` do conector, que vai dentro do jar). |
 | Por que `getConnection()` declara `throws SQLException`? | O erro de conexão segue o mesmo caminho de qualquer erro de banco: DAO repassa, Controller captura e devolve a mensagem. |

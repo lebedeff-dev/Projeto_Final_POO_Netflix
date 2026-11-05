@@ -1,5 +1,5 @@
 -- =====================================================================
--- Projeto Netflix (POO) - V2
+-- Projeto Netflix (POO)
 -- O sistema roda este script SOZINHO na primeira execucao (util/CriadorBanco.java)
 -- e de novo no botao "Restaurar dados de exemplo". Tambem pode ser aberto no Workbench.
 -- Recorte das 13 tabelas do modelo logico em 5 tabelas:

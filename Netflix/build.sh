@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # =====================================================================
-#  Gera o arquivo V2/Netflix.jar (Linux / macOS). Mesmo passo a passo do build.bat.
+#  Gera o arquivo Netflix.jar (Linux / macOS). Mesmo passo a passo do build.bat.
 #  Requer o JDK instalado (comandos javac e jar).
 # =====================================================================
 
@@ -33,4 +33,4 @@ echo "Main-Class: Main" > build/manifest.txt
 jar cfm ../Netflix.jar build/manifest.txt -C build/classes .
 
 rm -rf build
-echo "Pronto! Gerado: V2/Netflix.jar"
+echo "Pronto! Gerado: Netflix.jar"

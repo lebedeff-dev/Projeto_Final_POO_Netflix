@@ -14,7 +14,7 @@ import java.util.Properties;
  * Por que uma classe so para isso?
  *  - Os dados de conexao (servidor, porta, usuario, senha) ficam em UM unico lugar.
  *    Os DAOs so precisam chamar ConnectionFactory.getConnection().
- *  - Na V2 esses dados NAO ficam mais fixos no codigo: a TelaConexao pergunta ao
+ *  - Na versao principal esses dados NAO ficam mais fixos no codigo: a TelaConexao pergunta ao
  *    usuario e eles sao salvos no arquivo config.properties (ao lado do Netflix.jar).
  *    Assim ninguem precisa editar o codigo e recompilar para mudar a senha.
  *
