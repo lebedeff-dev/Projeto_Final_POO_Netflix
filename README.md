@@ -1,4 +1,4 @@
-<p align="center">
+﻿<p align="center">
   <img src="assets/netflix-logo.png" alt="Logo da Netflix" width="300">
 </p>
 
@@ -97,9 +97,9 @@ Conexão com o MySQL → Início (menu) → Cadastros → Histórico (rotina pri
 
 1. **Conexão:** ao abrir, o usuário informa servidor, porta, usuário e senha do MySQL. Se o banco `netflix` não existir, o sistema **o cria sozinho**, com tabelas e dados de exemplo. Os dados de conexão ficam salvos em `config.properties`, e a tela já abre preenchida nas próximas vezes.
 2. **Início:** menu com um botão para cada tela e a opção **Restaurar dados**. Uma barra de navegação no topo aparece em todas as telas, e a troca entre elas acontece na mesma janela, com um fade curto.
-3. **Cadastros:** Planos, Contas, Perfis e Títulos, todos com a mesma tela: formulário, tabela e os botões **Inserir**, **Salvar**, **Eliminar** e **Limpar**. Clicar numa linha da tabela leva os dados para o formulário.
+3. **Cadastros:** Planos, Contas, Perfis e Títulos, todos com a mesma tela: formulário, tabela e os botões **Inserir**, **Salvar**, **Remover** e **Limpar**. Clicar numa linha da tabela leva os dados para o formulário.
 4. **Histórico de Visualização:** registra o que cada perfil assistiu. A tabela exibe nomes (perfil, título, conta e plano) em vez de códigos, graças ao JOIN.
-5. **Relatório:** aberto pelo botão **Relatório** da tela de Histórico (ao lado de Inserir, Salvar, Eliminar e Limpar), onde o usuário escolhe data inicial, data final e, se quiser, um perfil; o sistema lista as visualizações do período, mostra o total e permite **salvar em `.txt`**.
+5. **Relatório:** aberto pelo botão **Relatório** da tela de Histórico (ao lado de Inserir, Salvar, Remover e Limpar), onde o usuário escolhe data inicial, data final e, se quiser, um perfil; o sistema lista as visualizações do período, mostra o total e permite **salvar em `.txt`**.
 
 ### Telas
 
