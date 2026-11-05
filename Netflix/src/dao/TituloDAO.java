@@ -41,25 +41,46 @@ public class TituloDAO {
              ResultSet rs = ps.executeQuery()) {
 
             while (rs.next()) {
-                Titulo t = new Titulo();
-                t.setIdTitulo(rs.getInt("id_titulo"));
-                t.setNome(rs.getString("nome"));
-                t.setSinopse(rs.getString("sinopse"));
-                t.setTipo(rs.getString("tipo"));
-                t.setAnoLancamento(rs.getInt("ano_lancamento"));
-                t.setClassificacaoIndicativa(rs.getString("classificacao_indicativa"));
-
-                // getInt devolve 0 quando o banco tem NULL; por isso perguntamos wasNull()
-                // logo depois para saber se o valor lido era de fato NULL.
-                int duracao = rs.getInt("duracao_minutos");
-                t.setDuracaoMinutos(rs.wasNull() ? null : duracao);
-
-                t.setIdiomaOriginal(rs.getString("idioma_original"));
-                t.setDisponivel(rs.getBoolean("disponivel"));
-                lista.add(t);
+                lista.add(montar(rs));
             }
         }
         return lista;
+    }
+
+    /** Busca um titulo pelo id (WHERE id_titulo = ?). Devolve null se nao existir. */
+    public Titulo buscarPorId(int idTitulo) throws SQLException {
+        String sql = "SELECT id_titulo, nome, sinopse, tipo, ano_lancamento, classificacao_indicativa, "
+                   + "duracao_minutos, idioma_original, disponivel "
+                   + "FROM titulo WHERE id_titulo = ?";
+
+        try (Connection con = ConnectionFactory.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setInt(1, idTitulo);
+            try (ResultSet rs = ps.executeQuery()) {
+                return rs.next() ? montar(rs) : null;
+            }
+        }
+    }
+
+    /** Converte a linha ATUAL do ResultSet em um Titulo (usado por listar e buscarPorId). */
+    private Titulo montar(ResultSet rs) throws SQLException {
+        Titulo t = new Titulo();
+        t.setIdTitulo(rs.getInt("id_titulo"));
+        t.setNome(rs.getString("nome"));
+        t.setSinopse(rs.getString("sinopse"));
+        t.setTipo(rs.getString("tipo"));
+        t.setAnoLancamento(rs.getInt("ano_lancamento"));
+        t.setClassificacaoIndicativa(rs.getString("classificacao_indicativa"));
+
+        // getInt devolve 0 quando o banco tem NULL; por isso perguntamos wasNull()
+        // logo depois para saber se o valor lido era de fato NULL.
+        int duracao = rs.getInt("duracao_minutos");
+        t.setDuracaoMinutos(rs.wasNull() ? null : duracao);
+
+        t.setIdiomaOriginal(rs.getString("idioma_original"));
+        t.setDisponivel(rs.getBoolean("disponivel"));
+        return t;
     }
 
     public boolean atualizar(Titulo t) throws SQLException {

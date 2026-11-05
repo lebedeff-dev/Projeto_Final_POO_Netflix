@@ -31,17 +31,13 @@ public class HistoricoController {
         }
     }
 
-    /** Opcoes do combo de perfis ("id - nome"). Tambem usado pelo relatorio. */
     /** Duracao em minutos do titulo escolhido (null se for serie ou se o titulo nao existir). */
     private Integer duracaoDoTitulo(int idTitulo) throws SQLException {
-        for (Titulo t : tituloDAO.listar()) {
-            if (t.getIdTitulo() == idTitulo) {
-                return t.getDuracaoMinutos();
-            }
-        }
-        return null;
+        Titulo t = tituloDAO.buscarPorId(idTitulo);
+        return t == null ? null : t.getDuracaoMinutos();
     }
 
+    /** Opcoes do combo de perfis ("id - nome"). */
     public List<String> opcoesPerfis() {
         try {
             List<String> opcoes = new ArrayList<>();
@@ -115,16 +111,28 @@ public class HistoricoController {
         if (minuto < 0) {
             throw new IllegalArgumentException("O minuto de parada não pode ser negativo.");
         }
+        boolean terminou = Conversor.paraBoolean(concluido);
         Integer duracao = duracaoDoTitulo(idTitulo); // null para series (a duracao fica nos episodios)
-        if (duracao != null && minuto > duracao) {
-            throw new IllegalArgumentException("O minuto de parada (" + minuto
-                    + ") não pode passar da duração do título (" + duracao + " min).");
+        if (duracao != null) {
+            if (minuto > duracao) {
+                throw new IllegalArgumentException("O minuto de parada (" + minuto
+                        + ") não pode passar da duração do título (" + duracao + " min).");
+            }
+            // Concluido e minuto precisam concordar: so terminou quem parou no ultimo minuto.
+            if (terminou && minuto != duracao) {
+                throw new IllegalArgumentException("Para marcar como concluído, o minuto de parada deve ser "
+                        + duracao + " (a duração do título).");
+            }
+            if (!terminou && minuto == duracao) {
+                throw new IllegalArgumentException("O minuto de parada chegou ao fim do título ("
+                        + duracao + " min): marque Concluído como Sim.");
+            }
         }
         return new HistoricoVisualizacao(
                 Conversor.extrairId(perfil, "Perfil"),
                 idTitulo,
                 minuto,
-                Conversor.paraBoolean(concluido),
+                terminou,
                 dispositivo);
     }
 }

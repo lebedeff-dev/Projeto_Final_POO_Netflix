@@ -371,6 +371,8 @@ ORDER BY c.id_conta
 Igual à primeira versão, com cuidado para `duracao_minutos` NULL:
 - `preencher(ps, t)`: método auxiliar que preenche os 9 `?` comuns ao INSERT e ao UPDATE. Para a duração: `if (t.getDuracaoMinutos() == null) { ps.setNull(6, Types.INTEGER); } else { ps.setInt(6, t.getDuracaoMinutos()); }`. `setInt` não aceita `null`, por isso `setNull` informando o tipo SQL.
 - `listar`: `int duracao = rs.getInt("duracao_minutos"); t.setDuracaoMinutos(rs.wasNull() ? null : duracao);`. `getInt` devolve 0 quando é NULL; `wasNull()` diz se o último valor lido era NULL.
+- `buscarPorId(id)`: `SELECT ... WHERE id_titulo = ?` com `ps.setInt(1, id)`; devolve o `Titulo` ou `null` se não existir (`return rs.next() ? montar(rs) : null;`). É o mesmo padrão do `select ... where` do exemplo do professor. O `HistoricoController` o usa para saber a duração.
+- `montar(rs)`: converte a linha atual do `ResultSet` em `Titulo`; `listar` e `buscarPorId` o reutilizam.
 
 ### 5.6 `HistoricoVisualizacaoDAO` (CRUD principal + consultas do relatório)
 
@@ -430,12 +432,13 @@ Mesmo molde. Diferenças:
 
 ### 6.3 `HistoricoController` (CRUD principal)
 
-- Três DAOs: `HistoricoVisualizacaoDAO`, `PerfilDAO` e `TituloDAO` (estes dois só para os combos).
+- Três DAOs: `HistoricoVisualizacaoDAO`, `PerfilDAO` e `TituloDAO` (`PerfilDAO` e `TituloDAO` alimentam os combos; o `TituloDAO` também busca a duração do título escolhido com `buscarPorId`).
 - `listarComNomes()`, `opcoesPerfis()`, `opcoesTitulos()` (formato `"id - nome"`).
 - `inserir`, `atualizar`, `eliminar`: mesmo molde.
 - `montar(...)`: converte as datas e o minuto e aplica **regras de negócio**:
   - Início e última visualização **não são digitados**: o `HistoricoVisualizacaoDAO` grava `NOW()` no INSERT (as duas) e só a última no UPDATE.
   - `if (minuto < 0)` → "O minuto de parada não pode ser negativo."
+  - `duracaoDoTitulo(idTitulo)` chama `TituloDAO.buscarPorId` (`SELECT ... WHERE id_titulo = ?`) e devolve a duração (`null` para séries). Com duração: minuto maior que ela é recusado; **Concluído = Sim só com o minuto igual à duração**, e o minuto igual à duração só com Concluído = Sim.
   - `Conversor.extrairId(perfil, "Perfil")` e `extrairId(titulo, "Título")`: as FKs.
 
 ### 6.4 `RelatorioController` (novo: relatório da rotina principal)
@@ -798,7 +801,7 @@ Resultado: um único arquivo (~2,6 MB) com nossas classes, o driver e o script S
 **5. Histórico de Visualização (CRUD principal + JOIN)**
 1. Colunas Perfil e Título mostram **"1 - Ana"** e **"1 - Stranger Things"** (INNER JOIN).
 2. **Inserir:** Perfil `3 - Kids`, Título `3 - Our Planet`, Minuto `30`, Dispositivo `Tablet`.
-3. **Alterar:** clique na linha; os combos se posicionam sozinhos. Mude Minuto para `45`, Concluído `Sim`.
+3. **Alterar:** clique na linha; os combos se posicionam sozinhos. Mude Minuto para `50` (a duração do título) e Concluído `Sim`.
 4. **Datas automáticas:** Início e Última visualização não são digitadas; aparecem na tabela já preenchidas pelo banco (data e hora de agora).
 5. **Remover** a linha criada.
 6. **CASCADE:** em Perfis, elimine **Pedro**; volte ao Histórico: as linhas dele sumiram.
@@ -983,7 +986,7 @@ Uma revisão "adversarial" (que tenta quebrar o sistema) achou 9 falhas (a de va
 | 5 | Um banco `netflix` já existente mas **vazio** nunca recebia as tabelas | Se o banco não existe ou está sem tabelas, é criado. Banco com tabelas continua sendo reaproveitado (nunca apagado) | `CriadorBanco.criarSeNaoExistir`, `bancoSemTabelas` |
 | 6 | Plano com valor negativo ou zero era aceito | "O valor mensal deve ser maior que zero." | `PlanoController.montar` |
 | 7 | Remover/atualizar um registro que já não existe dizia "sucesso" | Os DAOs devolvem `true/false` (`executeUpdate() > 0`) e o Controller avisa "Registro não encontrado" | os 5 DAOs e controllers, `Conversor.REGISTRO_NAO_ENCONTRADO` |
-| 8 | Minuto de parada maior que a duração do título era aceito | "O minuto de parada (X) não pode passar da duração do título (Y min)." Séries (sem duração) aceitam qualquer minuto | `HistoricoController.montar` |
+| 8 | Minuto de parada maior que a duração do título era aceito | "O minuto de parada (X) não pode passar da duração do título (Y min)." Séries (sem duração) aceitam qualquer minuto. Concluído e minuto também precisam concordar: "Sim" exige o último minuto e o último minuto exige "Sim" | `HistoricoController.montar` |
 | 9 | Erro de conta vinha sempre com a dica "(e-mail já cadastrado?)" | Código 1062 → "Já existe uma conta com esse e-mail."; 1452 → "O plano escolhido não existe mais."; outros erros mostram a mensagem do banco | `ContaController.mensagemDeErro` |
 | 10 | "Remover" sem linha selecionada perguntava "Remover o registro?" antes de avisar | Avisa "Selecione um registro" direto | `TelaCrud.confirmarEliminar` |
 
