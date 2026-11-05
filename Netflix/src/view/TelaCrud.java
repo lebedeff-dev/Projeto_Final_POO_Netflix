@@ -83,7 +83,7 @@ public abstract class TelaCrud extends JFrame {
     /** Idem para eliminar. */
     protected abstract String eliminar(String id);
 
-    /** Gancho opcional: a tela filha pode acrescentar botoes proprios ao lado de Inserir, Salvar, Remover e Limpar. */
+    /** Gancho opcional: a tela filha pode acrescentar botoes proprios ao lado de Inserir, Alterar, Remover e Limpar. */
     protected void acrescentarBotoes(JPanel painelBotoes) {
     }
 
@@ -146,7 +146,7 @@ public abstract class TelaCrud extends JFrame {
         painelForm.setBorder(BorderFactory.createEmptyBorder(10, 10, 5, 10));
 
         JButton btnInserir = new JButton("Inserir");
-        JButton btnAtualizar = new JButton("Salvar");
+        JButton btnAtualizar = new JButton("Alterar");
         JButton btnEliminar = new JButton("Remover");
         JButton btnLimpar = new JButton("Limpar");
 

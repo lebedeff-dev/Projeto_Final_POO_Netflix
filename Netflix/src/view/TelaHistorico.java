@@ -44,7 +44,7 @@ public class TelaHistorico extends TelaCrud {
     /**
      * Cada objeto da lista do INNER JOIN vira uma linha. getNomePerfil()/getNomeTitulo()
      * foram preenchidos pelo JOIN. O ID do registro (coluna 0) e o que os botoes
-     * Salvar e Remover usam.
+     * Alterar e Remover usam.
      */
     @Override
     protected void carregarTabela() {

@@ -776,7 +776,7 @@ Resultado: um único arquivo (~2,6 MB) com nossas classes, o driver e o script S
 **1. Planos**
 1. **Listar:** ao abrir, aparecem Basico, Padrao e Premium.
 2. **Inserir:** Nome `Familia`, Valor `29,90`, Qualidade `HD`, Telas `2`, Download `Sim` → "Plano inserido com sucesso!".
-3. **Salvar:** clique na linha Familia, mude o valor para `34,90` → Salvar.
+3. **Alterar:** clique na linha Familia, mude o valor para `34,90` → Alterar.
 4. **Remover:** selecione Familia → Remover → Sim.
 5. **FK:** tente eliminar **Premium** (tem conta) → "Não foi possível remover...".
 
@@ -798,7 +798,7 @@ Resultado: um único arquivo (~2,6 MB) com nossas classes, o driver e o script S
 **5. Histórico de Visualização (CRUD principal + JOIN)**
 1. Colunas Perfil e Título mostram **"1 - Ana"** e **"1 - Stranger Things"** (INNER JOIN).
 2. **Inserir:** Perfil `3 - Kids`, Título `3 - Our Planet`, Minuto `30`, Dispositivo `Tablet`.
-3. **Salvar:** clique na linha; os combos se posicionam sozinhos. Mude Minuto para `45`, Concluído `Sim`.
+3. **Alterar:** clique na linha; os combos se posicionam sozinhos. Mude Minuto para `45`, Concluído `Sim`.
 4. **Datas automáticas:** Início e Última visualização não são digitadas; aparecem na tabela já preenchidas pelo banco (data e hora de agora).
 5. **Remover** a linha criada.
 6. **CASCADE:** em Perfis, elimine **Pedro**; volte ao Histórico: as linhas dele sumiram.
@@ -816,7 +816,7 @@ Resultado: um único arquivo (~2,6 MB) com nossas classes, o driver e o script S
 |---|---|
 | Conectar e o menu abrir | JDBC + criação automática do banco |
 | Listar ao abrir | `SELECT` + `ResultSet` → objetos → `DefaultTableModel` |
-| Inserir / Salvar / Remover | `PreparedStatement` com INSERT, UPDATE e DELETE |
+| Inserir / Alterar / Remover | `PreparedStatement` com INSERT, UPDATE e DELETE |
 | "3 - Premium" na tabela de Contas | INNER JOIN conta + plano |
 | Remover plano em uso | integridade referencial (FK) |
 | E-mail repetido | restrição `UNIQUE` |
