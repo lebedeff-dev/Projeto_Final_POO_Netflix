@@ -196,6 +196,7 @@ INNER JOIN plano pl  ON pl.id_plano = c.id_plano;
 |---|---|
 | Java 11 ou superior | Linguagem (testado com Java 17) |
 | Swing / JFrame | Interface gráfica (`JTable` com `DefaultTableModel`) |
+| Swing UI Designer (IntelliJ) | Editor visual das telas: cada tela tem um arquivo `.form` ao lado do `.java` (`forms_rt.jar` em `Netflix/lib`) |
 | MySQL 8 | Banco de dados relacional |
 | JDBC (`mysql-connector-j 9.3.0`) | Comunicação entre Java e MySQL |
 | MVC + DAO | Arquitetura em camadas |
@@ -216,9 +217,11 @@ Não é preciso Workbench, IDE nem compilar nada.
 3. Na tela **Conectar ao MySQL**, digite a senha e clique em **Conectar**. Na primeira vez o banco é criado sozinho, com dados de exemplo.
 4. Navegue pelo menu. Para voltar os dados ao estado inicial, use **Restaurar dados**.
 
-**Mudou o código?** Rode `Netflix/build.bat` (Windows) ou `bash Netflix/build.sh` (Linux/macOS). Precisa do **JDK**. O script compila, copia o SQL e o driver para dentro do `.jar` e gera o `Netflix.jar` na raiz.
+**Mudou o código?** Rode `Netflix/build.bat` (Windows) ou `bash Netflix/build.sh` (Linux/macOS). Precisa do **JDK**. O script compila, copia o SQL, o driver e o `forms_rt` para dentro do `.jar` e gera o `Netflix.jar` na raiz.
 
-**Abrindo em uma IDE (IntelliJ, NetBeans, Eclipse):** adicione `Netflix/lib/mysql-connector-j-9.3.0.jar` às bibliotecas do projeto e execute a classe `Main`. Sem o driver, a conexão falha com *No suitable driver found*, mesmo com a senha correta.
+**Editando o visual das telas:** no IntelliJ, abra o `.form` de uma tela (ex.: `Netflix/src/view/TelaConta.form`) para mexer em textos, itens dos combos e posição dos campos de forma visual. Ative uma vez em *Settings → Editor → GUI Designer → Generate GUI into: **Java source code***: assim o IntelliJ atualiza o código dentro do `.java` e o `build.bat` continua funcionando sem a IDE. Não edite o método `$$$setupUI$$$` na mão.
+
+**Abrindo em uma IDE (IntelliJ, NetBeans, Eclipse):** adicione `Netflix/lib/mysql-connector-j-9.3.0.jar` e `Netflix/lib/forms_rt.jar` às bibliotecas do projeto e execute a classe `Main`. Sem o driver, a conexão falha com *No suitable driver found*, mesmo com a senha correta.
 
 | Sintoma | Solução |
 |---|---|
@@ -236,9 +239,9 @@ README.md
 Netflix.jar              Build pronta (dois cliques)
 Abrir Netflix.bat        Abre o jar e mostra erros, se houver
 Netflix/
-  src/                   Main e pacotes model, view, controller, dao e util
+  src/                   Main e pacotes model, view (.java + .form), controller, dao e util
   sql/netflix.sql        Script do banco (tabelas, PK, FK e dados de exemplo)
-  lib/                   Driver JDBC do MySQL
+  lib/                   Driver JDBC do MySQL e runtime do Swing UI Designer (forms_rt)
   build.bat, build.sh    Geram o Netflix.jar de novo
 Banco de dados/          Modelo lógico (.mwb e .pdf)
 assets/                  Imagem usada neste README

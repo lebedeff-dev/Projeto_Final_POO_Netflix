@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="view.TelaCrud">
+  <grid id="248c0" binding="painelRaiz" layout-manager="BorderLayout" hgap="0" vgap="0">
+    <constraints>
+      <xy x="20" y="20" width="500" height="400"/>
+    </constraints>
+    <properties/>
+    <border type="none"/>
+    <children>
+      <grid id="4ac0d" layout-manager="BorderLayout" hgap="0" vgap="0">
+        <constraints border-constraint="North"/>
+        <properties/>
+        <border type="none"/>
+        <children>
+          <grid id="e5189" binding="painelBarra" layout-manager="BorderLayout" hgap="0" vgap="0">
+            <constraints border-constraint="North"/>
+            <properties/>
+            <border type="none"/>
+            <children>
+            </children>
+          </grid>
+          <grid id="4da20" binding="painelFormulario" layout-manager="BorderLayout" hgap="0" vgap="0">
+            <constraints border-constraint="Center"/>
+            <properties/>
+            <border type="none"/>
+            <children>
+            </children>
+          </grid>
+        </children>
+      </grid>
+      <scrollpane id="d7a91" class="javax.swing.JScrollPane">
+        <constraints border-constraint="Center"/>
+        <properties/>
+        <border type="none"/>
+        <children>
+          <component id="2d3ca" class="javax.swing.JTable" binding="tabela">
+            <constraints/>
+            <properties/>
+          </component>
+        </children>
+      </scrollpane>
+      <grid id="a6343" binding="painelBotoes" layout-manager="FlowLayout" hgap="5" vgap="5" flow-align="1">
+        <constraints border-constraint="South"/>
+        <properties/>
+        <border type="none"/>
+        <children>
+          <component id="2ff47" class="javax.swing.JButton" binding="btnInserir">
+            <constraints/>
+            <properties>
+              <text value="Inserir"/>
+            </properties>
+          </component>
+          <component id="ec933" class="javax.swing.JButton" binding="btnAtualizar">
+            <constraints/>
+            <properties>
+              <text value="Alterar"/>
+            </properties>
+          </component>
+          <component id="cc2f4" class="javax.swing.JButton" binding="btnEliminar">
+            <constraints/>
+            <properties>
+              <text value="Remover"/>
+            </properties>
+          </component>
+          <component id="60596" class="javax.swing.JButton" binding="btnLimpar">
+            <constraints/>
+            <properties>
+              <text value="Limpar"/>
+            </properties>
+          </component>
+        </children>
+      </grid>
+    </children>
+  </grid>
+</form>
