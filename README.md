@@ -32,7 +32,7 @@
 7. [Como executar](#7-como-executar)
 8. [Estrutura do repositório](#8-estrutura-do-repositório)
 9. [Extras: contexto e versão com front-end](#9-extras-contexto-e-versão-com-front-end)
-10. [Autores] (#10-autores)
+10. [Autores](#10-autores)
 
 ---
 
