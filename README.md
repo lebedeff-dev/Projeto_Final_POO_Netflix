@@ -32,6 +32,7 @@
 7. [Como executar](#7-como-executar)
 8. [Estrutura do repositório](#8-estrutura-do-repositório)
 9. [Extras: contexto e versão com front-end](#9-extras-contexto-e-versão-com-front-end)
+10. [Autores] (#10-autores)
 
 ---
 
@@ -259,8 +260,8 @@ A pasta [`extras/`](extras/) reúne o material de apoio, que não é necessário
 
 ---
 
-## 👥 Autores
+## 10. Autores:
 
 - **LUÍS GUILHERME LEBEDEFF ROCHA MOTA** - [lebedeff-dev](https://github.com/lebedeff-dev)
 - **RENAN DE CARVALHO SÉRGIO** - [RenanDev2006](https://github.com/RenanDev2006)
-- **Jônatas Alves Oliveira** - [Jot4nas](https://github.com/Jot4nas)
+- **JÔNATAS ALVES OLIVEIRA** - [Jot4nas](https://github.com/Jot4nas)
