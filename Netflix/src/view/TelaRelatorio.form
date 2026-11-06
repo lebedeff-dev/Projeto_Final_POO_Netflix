@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="view.TelaRelatorio">
+  <grid id="ab023" binding="painelRaiz" layout-manager="BorderLayout" hgap="0" vgap="0">
+    <constraints>
+      <xy x="20" y="20" width="500" height="400"/>
+    </constraints>
+    <properties/>
+    <border type="none"/>
+    <children>
+      <grid id="557b2" layout-manager="BorderLayout" hgap="0" vgap="0">
+        <constraints border-constraint="North"/>
+        <properties/>
+        <border type="none"/>
+        <children>
+          <grid id="e952b" binding="painelBarra" layout-manager="BorderLayout" hgap="0" vgap="0">
+            <constraints border-constraint="North"/>
+            <properties/>
+            <border type="none"/>
+            <children>
+            </children>
+          </grid>
+          <grid id="a683a" layout-manager="FlowLayout" hgap="5" vgap="5" flow-align="0">
+            <constraints border-constraint="Center"/>
+            <properties/>
+            <border type="none"/>
+            <children>
+              <component id="7d084" class="javax.swing.JLabel">
+                <constraints/>
+                <properties>
+                  <text value="Data inicial (dd/mm/aaaa):"/>
+                </properties>
+              </component>
+              <component id="59334" class="javax.swing.JTextField" binding="campoDataInicial">
+                <constraints/>
+                <properties>
+                  <columns value="10"/>
+                  <text value="01/01/2025"/>
+                </properties>
+              </component>
+              <component id="2eebf" class="javax.swing.JLabel">
+                <constraints/>
+                <properties>
+                  <text value="Data final:"/>
+                </properties>
+              </component>
+              <component id="03040" class="javax.swing.JTextField" binding="campoDataFinal">
+                <constraints/>
+                <properties>
+                  <columns value="10"/>
+                </properties>
+              </component>
+              <component id="db6fc" class="javax.swing.JLabel">
+                <constraints/>
+                <properties>
+                  <text value="Perfil:"/>
+                </properties>
+              </component>
+              <component id="25480" class="javax.swing.JComboBox" binding="comboPerfil">
+                <constraints/>
+                <properties/>
+              </component>
+              <component id="323e5" class="javax.swing.JButton" binding="btnGerar">
+                <constraints/>
+                <properties>
+                  <text value="Gerar relatório"/>
+                </properties>
+              </component>
+              <component id="2cc15" class="javax.swing.JButton" binding="btnSalvar">
+                <constraints/>
+                <properties>
+                  <text value="Salvar .txt"/>
+                </properties>
+              </component>
+            </children>
+          </grid>
+        </children>
+      </grid>
+      <scrollpane id="f1f53" class="javax.swing.JScrollPane">
+        <constraints border-constraint="Center"/>
+        <properties/>
+        <border type="none"/>
+        <children>
+          <component id="14e26" class="javax.swing.JTable" binding="tabela">
+            <constraints/>
+            <properties/>
+          </component>
+        </children>
+      </scrollpane>
+      <component id="af013" class="javax.swing.JLabel" binding="labelResumo">
+        <constraints border-constraint="South"/>
+        <properties>
+          <text value=" "/>
+        </properties>
+      </component>
+    </children>
+  </grid>
+</form>

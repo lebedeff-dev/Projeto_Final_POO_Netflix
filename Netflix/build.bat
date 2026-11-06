@@ -9,6 +9,7 @@ rem Entra na pasta deste script (funciona com duplo clique, de qualquer lugar)
 cd /d "%~dp0"
 
 set DRIVER=lib\mysql-connector-j-9.3.0.jar
+set FORMS=lib\forms_rt.jar
 
 where javac >nul 2>nul
 if errorlevel 1 (
@@ -32,7 +33,7 @@ endlocal
 
 rem 2) Compila (--release 11: o jar roda em qualquer Java 11 ou mais novo)
 echo Compilando...
-javac -encoding UTF-8 --release 11 -cp "%DRIVER%" -d build\classes @build\fontes.txt
+javac -encoding UTF-8 --release 11 -cp "%DRIVER%;%FORMS%" -d build\classes @build\fontes.txt
 if errorlevel 1 (
     echo.
     echo ERRO na compilacao. Veja as mensagens acima.
@@ -43,10 +44,12 @@ if errorlevel 1 (
 rem 3) Coloca o script SQL dentro do jar (o CriadorBanco le de la)
 copy /y sql\netflix.sql build\classes\netflix.sql >nul
 
-rem 4) Coloca o driver do MySQL dentro do jar (assim ninguem precisa configurar classpath)
+rem 4) Coloca o driver do MySQL e o runtime do GUI Designer (forms_rt, usado pelos .form das telas)
+rem    dentro do jar (assim ninguem precisa configurar classpath)
 pushd build\classes
 jar xf "..\..\%DRIVER%"
-del /q META-INF\MANIFEST.MF META-INF\INDEX.LIST 2>nul
+jar xf "..\..\%FORMS%"
+del /q META-INF\MANIFEST.MF META-INF\INDEX.LIST __index__ 2>nul
 popd
 
 rem 5) Monta o jar dizendo qual classe tem o main
