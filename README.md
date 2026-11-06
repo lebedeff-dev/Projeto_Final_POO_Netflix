@@ -256,3 +256,11 @@ A pasta [`extras/`](extras/) reúne o material de apoio, que não é necessário
 | [`extras/contexto/`](extras/contexto/) | [`DOCUMENTACAO.md`](extras/contexto/DOCUMENTACAO.md) | Explicação de cada classe, linha a linha, e o roteiro de testes |
 | [`extras/contexto/`](extras/contexto/) | [`Obsidian-NetflixPOO.zip`](extras/contexto/Obsidian-NetflixPOO.zip) | Vault do Obsidian com notas de estudo do código. Descompacte e abra a pasta como vault (*Open folder as vault*) |
 | [`extras/`](extras/) | [`Versão com front-end.zip`](extras/Vers%C3%A3o%20com%20front-end.zip) | A mesma aplicação e a mesma lógica (model, DAO, controller e util), com a **interface personalizada**: tema escuro, tela Início com destaque e capas dos títulos, e abas de cadastro com visão **Visual** (cartões e avatares) ou **Tabela**. Descompacte e abra o `Netflix.jar`; os pôsteres ficam em `capas/`, e se uma capa faltar ela é desenhada em código |
+
+---
+
+## 👥 Autores
+
+- **LUÍS GUILHERME LEBEDEFF ROCHA MOTA** - [lebedeff-dev](https://github.com/lebedeff-dev)
+- **RENAN DE CARVALHO SÉRGIO** - [RenanDev2006](https://github.com/RenanDev2006)
+- **Jônatas Alves Oliveira** - [Jot4nas](https://github.com/Jot4nas)
