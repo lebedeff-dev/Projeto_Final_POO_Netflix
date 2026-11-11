@@ -38,7 +38,7 @@
 
 ## 1. A proposta do professor
 
-A atividade pede um **sistema desktop completo em Java**, com uma finalidade real, e não apenas telas de cadastro. Cada grupo escolhe um tema (clínica, oficina, hotel, biblioteca...) e define uma **rotina principal**, a funcionalidade central do sistema. O enunciado completo está em [`extras/contexto`](extras/contexto/).
+A atividade pede um **sistema desktop completo em Java**, com uma finalidade real, e não apenas telas de cadastro. Cada grupo escolhe um tema (clínica, oficina, hotel, biblioteca...) e define uma **rotina principal**, a funcionalidade central do sistema. O enunciado completo está em [`extras/contexto/Proposta`](extras/contexto/Proposta/).
 
 **Estrutura mínima obrigatória**
 
@@ -252,13 +252,24 @@ extras/                  Material de apoio (ver abaixo)
 
 ## 9. Extras: contexto e versão com front-end
 
-A pasta [`extras/`](extras/) reúne o material de apoio, que não é necessário para rodar o sistema.
+A pasta [`extras/`](extras/) reúne o material de apoio, que não é necessário para rodar o sistema. Ela tem duas partes: a pasta `contexto/`, com tudo o que explica e documenta o trabalho, e a versão alternativa com front-end.
+
+```
+extras/
+  contexto/
+    Proposta/        Enunciado do professor (PDF)
+    Documentacao/    Documentação técnica do código (.md e .docx)
+    Obsidian/        Vault de estudo do código (.zip)
+    Roteiro/         Roteiro da apresentação (.md e .docx)
+  Versão com front-end.zip
+```
 
 | Local | Arquivo | Conteúdo |
 |---|---|---|
-| [`extras/contexto/`](extras/contexto/) | [`Proposta - Trabalho Pratico POO Final.pdf`](extras/contexto/Proposta%20-%20Trabalho%20Pratico%20POO%20Final.pdf) | Enunciado do professor (resumido na seção 1) |
-| [`extras/contexto/`](extras/contexto/) | [`DOCUMENTACAO.md`](extras/contexto/DOCUMENTACAO.md) | Explicação de cada classe, linha a linha, e o roteiro de testes |
-| [`extras/contexto/`](extras/contexto/) | [`Obsidian-NetflixPOO.zip`](extras/contexto/Obsidian-NetflixPOO.zip) | Vault do Obsidian com notas de estudo do código. Descompacte e abra a pasta como vault (*Open folder as vault*) |
+| [`extras/contexto/Proposta/`](extras/contexto/Proposta/) | [`Proposta - Trabalho Pratico POO Final.pdf`](extras/contexto/Proposta/Proposta%20-%20Trabalho%20Pratico%20POO%20Final.pdf) | **O que o professor pediu.** Enunciado oficial, com a estrutura mínima obrigatória e os critérios de avaliação. Está resumido na seção 1 |
+| [`extras/contexto/Documentacao/`](extras/contexto/Documentacao/) | [`DOCUMENTACAO.md`](extras/contexto/Documentacao/DOCUMENTACAO.md) e [`DOCUMENTACAO.docx`](extras/contexto/Documentacao/DOCUMENTACAO.docx) | **Como o código funciona.** Explica cada pacote e classe (banco, `util`, `model`, `dao`, `controller` e `view`), a integração entre Java e MySQL, os conceitos de POO e o roteiro de testes. O `.md` é a versão completa de estudo, com as perguntas prováveis do professor. O `.docx` é uma versão formatada, com capa e sumário, própria para enviar |
+| [`extras/contexto/Obsidian/`](extras/contexto/Obsidian/) | [`Obsidian-NetflixPOO.zip`](extras/contexto/Obsidian/Obsidian-NetflixPOO.zip) | **Notas de estudo.** Vault do Obsidian com as notas do código em formato navegável. Descompacte e abra a pasta como vault (*Open folder as vault*) |
+| [`extras/contexto/Roteiro/`](extras/contexto/Roteiro/) | [`ROTEIRO-APRESENTACAO.md`](extras/contexto/Roteiro/ROTEIRO-APRESENTACAO.md) e [`ROTEIRO-APRESENTACAO.docx`](extras/contexto/Roteiro/ROTEIRO-APRESENTACAO.docx) | **Como apresentar.** Divide a apresentação entre as três pessoas do grupo (Plano e Conta, Perfil e Título, Histórico e Relatório), com resposta de abertura, classes e linhas de código, perguntas prováveis e um mapa para localizar cada peça no código. O `.docx` é a mesma versão para leitura |
 | [`extras/`](extras/) | [`Versão com front-end.zip`](extras/Vers%C3%A3o%20com%20front-end.zip) | A mesma aplicação e a mesma lógica (model, DAO, controller e util), com a **interface personalizada**: tema escuro, tela Início com destaque e capas dos títulos, e abas de cadastro com visão **Visual** (cartões e avatares) ou **Tabela**. Descompacte e abra o `Netflix.jar`; os pôsteres ficam em `capas/`, e se uma capa faltar ela é desenhada em código |
 
 ---
