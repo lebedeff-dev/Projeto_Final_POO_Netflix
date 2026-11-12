@@ -32,7 +32,8 @@
 7. [Como executar](#7-como-executar)
 8. [Estrutura do repositório](#8-estrutura-do-repositório)
 9. [Extras: contexto e versão com front-end](#9-extras-contexto-e-versão-com-front-end)
-10. [Autores](#10-autores)
+10. [Declaração de Uso de Inteligência Artificial](#10-declaração-de-uso-de-inteligência-artificial)
+11. [Autores](#11-autores)
 
 ---
 
@@ -274,7 +275,15 @@ extras/
 
 ---
 
-## 10. Autores:
+## 10. Declaração de Uso de Inteligência Artificial
+
+Ferramentas de inteligência artificial (Claude, da Anthropic) foram utilizadas neste projeto exclusivamente como apoio à organização e ao gerenciamento do repositório no GitHub, incluindo a estruturação de pastas, a padronização da documentação e a redação de mensagens de commit.
+
+A concepção do sistema, o desenvolvimento do código-fonte e as decisões técnicas e de projeto são de autoria dos integrantes do grupo, listados na seção de Autores. Todo o conteúdo publicado neste repositório foi revisado pela equipe, que se responsabiliza integralmente por ele.
+
+---
+
+## 11. Autores:
 
 - **LUÍS GUILHERME LEBEDEFF ROCHA MOTA** - [lebedeff-dev](https://github.com/lebedeff-dev)
 - **RENAN DE CARVALHO SÉRGIO** - [RenanDev2006](https://github.com/RenanDev2006)
