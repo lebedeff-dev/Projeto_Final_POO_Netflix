@@ -259,6 +259,7 @@ A pasta [`extras/`](extras/) reúne o material de apoio, que não é necessário
 extras/
   contexto/
     Proposta/        Enunciado do professor (PDF)
+    Banco de Dados/  Modelo lógico completo do banco (PDF)
     Documentacao/    Documentação técnica do código (.md e .docx)
     Obsidian/        Vault de estudo do código (.zip)
     Roteiro/         Roteiro da apresentação (.md e .docx)
@@ -268,6 +269,7 @@ extras/
 | Local | Arquivo | Conteúdo |
 |---|---|---|
 | [`extras/contexto/Proposta/`](extras/contexto/Proposta/) | [`Proposta - Trabalho Pratico POO Final.pdf`](extras/contexto/Proposta/Proposta%20-%20Trabalho%20Pratico%20POO%20Final.pdf) | **O que o professor pediu.** Enunciado oficial, com a estrutura mínima obrigatória e os critérios de avaliação. Está resumido na seção 1 |
+| [`extras/contexto/Banco de Dados/`](extras/contexto/Banco%20de%20Dados/) | [`modelo_logico_netflix.pdf`](extras/contexto/Banco%20de%20Dados/modelo_logico_netflix.pdf) | **Como o banco se organiza.** Diagrama do modelo lógico completo da Netflix, com 13 entidades, suas chaves primárias e estrangeiras e os relacionamentos 1:1, 1:N e N:N. O sistema entregue implementa um recorte dele (Plano, Conta, Perfil, Título e Histórico de Visualização), cujo script está em `Netflix/sql/netflix.sql` |
 | [`extras/contexto/Documentacao/`](extras/contexto/Documentacao/) | [`DOCUMENTACAO.md`](extras/contexto/Documentacao/DOCUMENTACAO.md) e [`DOCUMENTACAO.docx`](extras/contexto/Documentacao/DOCUMENTACAO.docx) | **Como o código funciona.** Explica cada pacote e classe (banco, `util`, `model`, `dao`, `controller` e `view`), a integração entre Java e MySQL, os conceitos de POO e o roteiro de testes. O `.md` é a versão completa de estudo, com as perguntas prováveis do professor. O `.docx` é uma versão formatada, com capa e sumário, própria para enviar |
 | [`extras/contexto/Obsidian/`](extras/contexto/Obsidian/) | [`Obsidian-NetflixPOO.zip`](extras/contexto/Obsidian/Obsidian-NetflixPOO.zip) | **Notas de estudo.** Vault do Obsidian com as notas do código em formato navegável. Descompacte e abra a pasta como vault (*Open folder as vault*) |
 | [`extras/contexto/Roteiro/`](extras/contexto/Roteiro/) | [`ROTEIRO-APRESENTACAO.md`](extras/contexto/Roteiro/ROTEIRO-APRESENTACAO.md) e [`ROTEIRO-APRESENTACAO.docx`](extras/contexto/Roteiro/ROTEIRO-APRESENTACAO.docx) | **Como apresentar.** Divide a apresentação entre as três pessoas do grupo (Plano e Conta, Perfil e Título, Histórico e Relatório), com resposta de abertura, classes e linhas de código, perguntas prováveis e um mapa para localizar cada peça no código. O `.docx` é a mesma versão para leitura |
