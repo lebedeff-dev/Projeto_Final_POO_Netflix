@@ -97,7 +97,7 @@ Projeto_Final_POO_Netflix/
       view/        TelaConexao, TelaPrincipal, BarraNavegacao, Navegador, TelaCrud, TelaPlano, TelaConta, TelaPerfil,
                    TelaTitulo, TelaHistorico, TelaRelatorio
       util/        ConnectionFactory, CriadorBanco, Conversor
-  Banco de dados/              (modelo lógico do grupo: .mwb e .pdf)
+  Banco de dados/              (modelo lógico do grupo: .mwb)
   Proposta/                    (enunciado do trabalho)
   Fontes/                      (aulas e exemplos do professor)
 ```

@@ -162,7 +162,7 @@ View (telas Swing)  →  Controller (valida e aplica regras)  →  DAO (SQL com 
 
 ## 5. Banco de dados
 
-Script: [`Netflix/sql/netflix.sql`](Netflix/sql/netflix.sql). Modelo lógico do grupo em [`Banco de dados/`](Banco%20de%20dados/).
+Script: [`Netflix/sql/netflix.sql`](Netflix/sql/netflix.sql). Modelo lógico do grupo em [`Banco de dados/`](Banco%20de%20dados/) (arquivo `.mwb`) e, em PDF, em [`extras/contexto/Banco de Dados/`](extras/contexto/Banco%20de%20Dados/).
 
 ```
 plano 1 ──── N conta 1 ──── N perfil N ──── N titulo
@@ -244,7 +244,7 @@ Netflix/
   sql/netflix.sql        Script do banco (tabelas, PK, FK e dados de exemplo)
   lib/                   Driver JDBC do MySQL e runtime do Swing UI Designer (forms_rt)
   build.bat, build.sh    Geram o Netflix.jar de novo
-Banco de dados/          Modelo lógico (.mwb e .pdf)
+Banco de dados/          Modelo lógico (.mwb, para o MySQL Workbench)
 assets/                  Imagem usada neste README
 extras/                  Material de apoio (ver abaixo)
 ```
