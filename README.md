@@ -285,7 +285,7 @@ A concepção do sistema, o desenvolvimento do código-fonte e as decisões téc
 
 ---
 
-## 11. Autores:
+## 11. Autores
 
 - **LUÍS GUILHERME LEBEDEFF ROCHA MOTA** - [lebedeff-dev](https://github.com/lebedeff-dev)
 - **RENAN DE CARVALHO SÉRGIO** - [RenanDev2006](https://github.com/RenanDev2006)
