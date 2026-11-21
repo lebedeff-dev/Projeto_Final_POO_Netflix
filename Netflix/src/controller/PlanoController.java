@@ -9,29 +9,21 @@ import model.Plano;
 import util.Conversor;
 
 /**
- * CONTROLLER de Plano: o "meio de campo" entre View e DAO.
- *
- *   View  --(Strings digitadas)-->  Controller  --(objeto Plano)-->  DAO  --> MySQL
- *
- * O que o Controller faz:
- *  1) recebe os dados como String da View;
- *  2) valida e converte (Conversor);
- *  3) cria o Model (new Plano) e chama o DAO;
- *  4) devolve para a View uma MENSAGEM de resultado (sucesso ou erro).
- * A View nao sabe nada de banco; o DAO nao sabe nada de telas.
- * Os outros controllers seguem exatamente este mesmo padrao.
+ * Controller de Plano. Recebe os textos da View, valida e converte com o Conversor, monta o
+ * Plano, chama o DAO e devolve uma mensagem de resultado. A View nao conhece o banco e o DAO
+ * nao conhece as telas. Os outros controllers seguem o mesmo padrao.
  */
 public class PlanoController {
 
     private final PlanoDAO dao = new PlanoDAO();
 
-    /** Devolve a lista para a View preencher o JTable. */
+    /** Lista para a tabela da tela. */
     public List<Plano> listar() {
         try {
             return dao.listar();
         } catch (SQLException e) {
-            // listar devolve uma lista (nao uma mensagem), entao o erro sobe como
-            // RuntimeException e a TelaCrud mostra a mensagem dele.
+            // listar devolve lista, nao mensagem, entao o erro sobe como RuntimeException
+            // e a TelaCrud mostra.
             throw new RuntimeException("Erro ao listar planos: " + e.getMessage(), e);
         }
     }
@@ -41,9 +33,9 @@ public class PlanoController {
         try {
             dao.inserir(montar(nome, valorMensal, qualidadeMaxima, telas, permiteDownload));
             return "Plano inserido com sucesso!";
-        } catch (IllegalArgumentException e) { // erro de validacao (Conversor)
+        } catch (IllegalArgumentException e) { // validacao (Conversor)
             return e.getMessage();
-        } catch (SQLException e) {             // erro do banco (inclusive MySQL desligado)
+        } catch (SQLException e) {             // banco, inclusive MySQL desligado
             return "Erro no banco de dados: " + e.getMessage();
         }
     }
@@ -74,7 +66,7 @@ public class PlanoController {
         } catch (IllegalArgumentException e) {
             return e.getMessage();
         } catch (SQLException e) {
-            // 1451 = o MySQL recusou porque ha contas usando este plano (chave estrangeira).
+            // 1451: o MySQL recusou porque ha contas usando este plano (FK).
             if (e.getErrorCode() == 1451) {
                 return "Não é possível remover este plano: há contas que usam ele. "
                         + "Troque o plano dessas contas (ou remova-as) antes.";
@@ -84,12 +76,10 @@ public class PlanoController {
     }
 
     /**
-     * REGRA DE NEGOCIO: a descricao do plano NAO e digitada, e gerada a partir do
-     * numero de telas e da qualidade maxima. Ex.: ("2", "Full HD") -> "Duas telas, qualidade Full HD".
-     * A tela usa este metodo para mostrar a descricao ao vivo; o proprio controller
-     * o usa de novo na hora de salvar (assim a descricao gravada nunca fica
-     * diferente das telas e da qualidade do plano).
-     * Devolve "" se o numero de telas ainda for invalido (a tela mostra o campo vazio).
+     * A descricao do plano nao e digitada: sai do numero de telas e da qualidade. Exemplo:
+     * ("2", "Full HD") vira "Duas telas, qualidade Full HD". A tela chama este metodo para mostrar
+     * a descricao ao vivo, e o montar() chama de novo ao salvar, entao a descricao gravada sempre
+     * bate com os campos. Devolve "" se o numero de telas for invalido.
      */
     public String gerarDescricao(String telas, String qualidadeMaxima) {
         int quantidade;
@@ -106,15 +96,15 @@ public class PlanoController {
         return telasTexto + ", qualidade " + qualidadeMaxima;
     }
 
-    /** Monta o Model a partir dos textos; reaproveitado por inserir e atualizar. */
+    /** Monta o Plano a partir dos textos. inserir e atualizar usam. */
     private Plano montar(String nome, String valorMensal, String qualidadeMaxima,
                          String telas, String permiteDownload) {
         BigDecimal valor = Conversor.paraDecimal(valorMensal, "Valor mensal");
-        if (valor.signum() <= 0) { // regra: um plano precisa custar mais que zero
+        if (valor.signum() <= 0) { // o valor precisa ser maior que zero
             throw new IllegalArgumentException("O valor mensal deve ser maior que zero.");
         }
         int quantidadeTelas = Conversor.paraInt(telas, "Telas simultâneas");
-        if (quantidadeTelas < 1) { // regra: um plano precisa de pelo menos 1 tela
+        if (quantidadeTelas < 1) { // pelo menos 1 tela
             throw new IllegalArgumentException("O plano precisa ter pelo menos 1 tela simultânea.");
         }
         return new Plano(

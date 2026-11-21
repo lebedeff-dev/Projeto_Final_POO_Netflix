@@ -7,7 +7,7 @@ import dao.TituloDAO;
 import model.Titulo;
 import util.Conversor;
 
-/** CONTROLLER de Titulo (mesmo padrao do PlanoController). */
+/** Controller de Titulo, no padrao do PlanoController. */
 public class TituloController {
 
     private final TituloDAO dao = new TituloDAO();
@@ -70,7 +70,7 @@ public class TituloController {
                 tipo,
                 Conversor.paraInt(ano, "Ano lançamento"),
                 classificacao,
-                Conversor.paraIntOuNulo(duracao, "Duração (min)"), // vazio -> null (series)
+                Conversor.paraIntOuNulo(duracao, "Duração (min)"), // vazio vira null (series)
                 Conversor.vazioParaNulo(idioma),
                 Conversor.paraBoolean(disponivel));
     }

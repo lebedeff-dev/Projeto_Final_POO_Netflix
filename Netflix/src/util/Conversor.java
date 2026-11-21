@@ -8,27 +8,25 @@ import java.time.format.ResolverStyle;
 import java.time.format.DateTimeParseException;
 
 /**
- * Utilitario de conversao: a View entrega TUDO como texto (String) e o Controller
- * usa estes metodos para transformar em int, BigDecimal, LocalDate etc.
- * Se o texto for invalido, lancamos IllegalArgumentException com uma mensagem
- * amigavel; o Controller captura e devolve essa mensagem para a View exibir.
+ * Converte o texto digitado em int, BigDecimal, LocalDate etc. Texto invalido lanca
+ * IllegalArgumentException com a mensagem pronta para a tela, e o Controller devolve essa mensagem.
  */
 public class Conversor {
 
-    // Formato brasileiro. STRICT recusa datas que nao existem (ex.: 31/02/2026).
+    // Formato brasileiro. STRICT recusa datas que nao existem, como 31/02/2026.
     private static final DateTimeFormatter DATA = DateTimeFormatter.ofPattern("dd/MM/uuuu")
             .withResolverStyle(ResolverStyle.STRICT);
-    // Data e hora que o sistema MOSTRA (tabelas e relatorio). Para trocar a ordem, mude so esta linha.
+    // Formato de data e hora mostrado nas tabelas e no relatorio.
     private static final DateTimeFormatter DATA_HORA = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
 
-    /** Resposta quando UPDATE/DELETE nao encontra o id (ex.: o registro foi removido em outra janela). */
+    /** Mensagem quando o UPDATE ou DELETE nao acha o id, por exemplo se outra janela removeu o registro. */
     public static final String REGISTRO_NAO_ENCONTRADO =
             "Registro não encontrado (ele pode ter sido removido em outra janela). A tabela foi atualizada.";
 
     private Conversor() {
     }
 
-    /** Campo de texto obrigatorio: nao pode estar vazio. */
+    /** Campo obrigatorio, nao pode ficar vazio. */
     public static String obrigatorio(String texto, String campo) {
         if (texto == null || texto.trim().isEmpty()) {
             throw new IllegalArgumentException("O campo '" + campo + "' é obrigatório.");
@@ -36,7 +34,7 @@ public class Conversor {
         return texto.trim();
     }
 
-    /** Campo opcional: texto vazio vira null (que o DAO grava como NULL no banco). */
+    /** Campo opcional: texto vazio vira null, que o DAO grava como NULL. */
     public static String vazioParaNulo(String texto) {
         return (texto == null || texto.trim().isEmpty()) ? null : texto.trim();
     }
@@ -80,18 +78,14 @@ public class Conversor {
     }
 
     /**
-     * Texto "id - nome" (ex.: "3 - Premium") usado nos combos de chave estrangeira
-     * E nas colunas das tabelas. Como os dois usam o mesmo formato, ao clicar numa
-     * linha o combo encontra exatamente o mesmo texto e se posiciona sozinho.
+     * Monta o texto "3 - Premium" dos combos de FK e das colunas da tabela. Com o mesmo formato
+     * nos dois, clicar numa linha ja seleciona o item certo no combo.
      */
     public static String opcao(int id, String nome) {
         return id + " - " + nome;
     }
 
-    /**
-     * Os combos de chave estrangeira mostram "3 - Premium" (id - nome).
-     * Aqui pegamos so o numero antes do " - ".
-     */
+    /** Pega o id de um texto como "3 - Premium". */
     public static int extrairId(String opcao, String campo) {
         if (opcao == null || opcao.trim().isEmpty()) {
             throw new IllegalArgumentException("Selecione um valor em '" + campo + "'.");
@@ -99,7 +93,7 @@ public class Conversor {
         return paraInt(opcao.split(" - ")[0], campo);
     }
 
-    /** Id da linha selecionada na tabela; vazio significa que o usuario nao selecionou nada. */
+    /** Id da linha selecionada. Vazio quer dizer que nada foi selecionado. */
     public static int paraId(String texto) {
         if (texto == null || texto.trim().isEmpty()) {
             throw new IllegalArgumentException("Selecione um registro na tabela primeiro.");

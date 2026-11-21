@@ -11,10 +11,7 @@ import java.util.List;
 import model.Titulo;
 import util.ConnectionFactory;
 
-/**
- * DAO de Titulo. Mesma estrutura do PlanoDAO.
- * Cuidado especial com duracao_minutos, que pode ser NULL (series).
- */
+/** DAO de Titulo, no molde do PlanoDAO. A duracao_minutos pode ser NULL (series). */
 public class TituloDAO {
 
     public void inserir(Titulo t) throws SQLException {
@@ -47,7 +44,7 @@ public class TituloDAO {
         return lista;
     }
 
-    /** Busca um titulo pelo id (WHERE id_titulo = ?). Devolve null se nao existir. */
+    /** Devolve o titulo do id, ou null se nao existir. */
     public Titulo buscarPorId(int idTitulo) throws SQLException {
         String sql = "SELECT id_titulo, nome, sinopse, tipo, ano_lancamento, classificacao_indicativa, "
                    + "duracao_minutos, idioma_original, disponivel "
@@ -63,7 +60,7 @@ public class TituloDAO {
         }
     }
 
-    /** Converte a linha ATUAL do ResultSet em um Titulo (usado por listar e buscarPorId). */
+    /** Converte a linha atual do ResultSet em Titulo. */
     private Titulo montar(ResultSet rs) throws SQLException {
         Titulo t = new Titulo();
         t.setIdTitulo(rs.getInt("id_titulo"));
@@ -73,8 +70,7 @@ public class TituloDAO {
         t.setAnoLancamento(rs.getInt("ano_lancamento"));
         t.setClassificacaoIndicativa(rs.getString("classificacao_indicativa"));
 
-        // getInt devolve 0 quando o banco tem NULL; por isso perguntamos wasNull()
-        // logo depois para saber se o valor lido era de fato NULL.
+        // getInt devolve 0 para NULL, entao wasNull() diz se o valor era NULL de verdade.
         int duracao = rs.getInt("duracao_minutos");
         t.setDuracaoMinutos(rs.wasNull() ? null : duracao);
 
@@ -97,7 +93,7 @@ public class TituloDAO {
         }
     }
 
-    /** Ao eliminar o titulo, o historico dele e apagado junto (ON DELETE CASCADE). */
+    /** O historico do titulo e apagado junto (ON DELETE CASCADE). */
     public boolean eliminar(int idTitulo) throws SQLException {
         String sql = "DELETE FROM titulo WHERE id_titulo = ?";
 
@@ -108,7 +104,7 @@ public class TituloDAO {
         }
     }
 
-    /** Preenche os 9 primeiros "?" (iguais no INSERT e no UPDATE) para nao repetir codigo. */
+    /** Preenche os 8 primeiros "?", iguais no INSERT e no UPDATE. */
     private void preencher(PreparedStatement ps, Titulo t) throws SQLException {
         ps.setString(1, t.getNome());
         ps.setString(2, t.getSinopse());
@@ -116,8 +112,7 @@ public class TituloDAO {
         ps.setInt(4, t.getAnoLancamento());
         ps.setString(5, t.getClassificacaoIndicativa());
 
-        // Integer null nao pode ir em setInt (daria NullPointerException):
-        // usamos setNull, informando o tipo SQL da coluna.
+        // setInt com Integer nulo daria NullPointerException, entao usa setNull com o tipo da coluna.
         if (t.getDuracaoMinutos() == null) {
             ps.setNull(6, Types.INTEGER);
         } else {

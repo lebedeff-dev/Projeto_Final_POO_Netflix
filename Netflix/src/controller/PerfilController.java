@@ -10,11 +10,11 @@ import model.Conta;
 import model.Perfil;
 import util.Conversor;
 
-/** CONTROLLER de Perfil (mesmo padrao do PlanoController). */
+/** Controller de Perfil, no padrao do PlanoController. */
 public class PerfilController {
 
     private final PerfilDAO dao = new PerfilDAO();
-    private final ContaDAO contaDAO = new ContaDAO(); // so para alimentar o combo de contas
+    private final ContaDAO contaDAO = new ContaDAO(); // para o combo de contas
 
     public List<Perfil> listar() {
         try {
@@ -24,7 +24,7 @@ public class PerfilController {
         }
     }
 
-    /** Opcoes do combo de contas no formato "id - email". */
+    /** Itens do combo de contas, no formato "id - email". */
     public List<String> opcoesContas() {
         try {
             List<String> opcoes = new ArrayList<>();
@@ -79,7 +79,7 @@ public class PerfilController {
 
     private Perfil montar(String conta, String nome, String avatar, String infantil, String pin) {
         String pinValido = Conversor.vazioParaNulo(pin);
-        if (pinValido != null && !pinValido.matches("\\d{4}")) { // regra: PIN opcional, mas com 4 digitos
+        if (pinValido != null && !pinValido.matches("\\d{4}")) { // PIN e opcional, mas precisa ter 4 digitos
             throw new IllegalArgumentException("O PIN deve ter exatamente 4 dígitos.");
         }
         return new Perfil(

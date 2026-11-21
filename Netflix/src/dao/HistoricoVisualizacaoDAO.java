@@ -19,21 +19,11 @@ import util.ConnectionFactory;
 public class HistoricoVisualizacaoDAO {
 
     /**
-     * Parte comum das duas consultas com INNER JOIN (listarComNomes e listarPorPeriodo).
-     *
-     * Problema: o historico guarda so NUMEROS (id_perfil, id_titulo), e o usuario
-     * quer ler NOMES. Solucao: juntar as tres tabelas.
-     *
-     *   FROM historico_visualizacao h
-     *   INNER JOIN perfil p ON p.id_perfil = h.id_perfil   -> liga cada linha do historico ao seu perfil
-     *   INNER JOIN titulo t ON t.id_titulo = h.id_titulo   -> e ao seu titulo
-     *
-     * - "ON" diz QUAL coluna casa com QUAL (PK da tabela pai = FK do historico).
-     * - INNER JOIN so devolve linhas que tem correspondencia nas duas tabelas.
-     *   (Como as FKs garantem que perfil e titulo existem, nenhuma linha se perde.)
-     * - "h", "p", "t" sao apelidos (aliases) para encurtar o SQL.
-     * - "AS nome_perfil" / "AS nome_titulo": as duas tabelas tem uma coluna "nome";
-     *   sem apelido nao daria para distinguir as duas no ResultSet.
+     * SELECT das duas consultas (listarComNomes e listarPorPeriodo). O historico guarda so ids
+     * (id_perfil, id_titulo), e a tela precisa de nomes. Cada INNER JOIN liga a linha do historico
+     * a uma tabela pai, casando a PK dela com a FK (perfil e titulo direto, conta e plano pelo perfil).
+     * As FKs garantem que o pai existe, entao nenhuma linha some. Perfil e titulo tem uma coluna
+     * "nome" cada, por isso os apelidos nome_perfil e nome_titulo.
      */
     private static final String SELECT_COM_NOMES =
             "SELECT h.id_visualizacao, h.id_perfil, h.id_titulo, h.data_inicio, "
@@ -46,7 +36,7 @@ public class HistoricoVisualizacaoDAO {
           + "INNER JOIN conta c ON c.id_conta = p.id_conta "
           + "INNER JOIN plano pl ON pl.id_plano = c.id_plano ";
 
-    /** INSERT: grava as duas FKs (idPerfil, idTitulo) e os dados da sessao. */
+    /** Grava as duas FKs e os dados da sessao. As datas vem do NOW() do MySQL. */
     public void inserir(HistoricoVisualizacao h) throws SQLException {
         String sql = "INSERT INTO historico_visualizacao (id_perfil, id_titulo, data_inicio, "
                    + "data_ultima_visualizacao, minuto_parada, concluido, dispositivo) "
@@ -60,12 +50,12 @@ public class HistoricoVisualizacaoDAO {
             ps.setInt(3, h.getMinutoParada());
             ps.setBoolean(4, h.isConcluido());
             ps.setString(5, h.getDispositivo());
-            // nomePerfil e nomeTitulo NAO sao gravados: nao existem nesta tabela.
+            // nomePerfil e nomeTitulo nao sao gravados, pois nao existem na tabela.
             ps.executeUpdate();
         }
     }
 
-    /** READ do CRUD principal: todas as visualizacoes, com NOMES (INNER JOIN), mais recentes primeiro. */
+    /** Todas as visualizacoes com nomes, das mais recentes para as mais antigas. */
     public List<HistoricoVisualizacao> listarComNomes() throws SQLException {
         String sql = SELECT_COM_NOMES + "ORDER BY h.data_ultima_visualizacao DESC";
         List<HistoricoVisualizacao> lista = new ArrayList<>();
@@ -82,17 +72,15 @@ public class HistoricoVisualizacaoDAO {
     }
 
     /**
-     * CONSULTA DO RELATORIO: visualizacoes iniciadas entre duas datas, com nomes (INNER JOIN).
-     * Se idPerfil for 0 traz todos os perfis; senao, so o perfil escolhido.
-     *
-     * DATE(h.data_inicio) tira a hora do DATETIME, para comparar so a data.
-     * BETWEEN ? AND ? inclui as duas pontas (data inicial e data final).
+     * Consulta do relatorio: visualizacoes iniciadas entre duas datas, com nomes. Com idPerfil 0
+     * traz todos os perfis. DATE(h.data_inicio) tira a hora do DATETIME e o BETWEEN inclui as
+     * duas pontas.
      */
     public List<HistoricoVisualizacao> listarPorPeriodo(LocalDate dataInicial, LocalDate dataFinal, int idPerfil)
             throws SQLException {
         String sql = SELECT_COM_NOMES + "WHERE DATE(h.data_inicio) BETWEEN ? AND ? ";
         if (idPerfil > 0) {
-            sql += "AND h.id_perfil = ? "; // filtro opcional: so acrescentamos se um perfil foi escolhido
+            sql += "AND h.id_perfil = ? "; // filtro opcional
         }
         sql += "ORDER BY h.data_inicio";
         List<HistoricoVisualizacao> lista = new ArrayList<>();
@@ -115,7 +103,7 @@ public class HistoricoVisualizacaoDAO {
         return lista;
     }
 
-    /** UPDATE: altera o registro identificado pelo id (WHERE). Sem o WHERE, todas as linhas seriam alteradas. */
+    /** Altera a sessao do id. Sem o WHERE, todas as linhas mudariam. */
     public boolean atualizar(HistoricoVisualizacao h) throws SQLException {
         String sql = "UPDATE historico_visualizacao SET id_perfil = ?, id_titulo = ?, "
                    + "data_ultima_visualizacao = NOW(), minuto_parada = ?, concluido = ?, dispositivo = ? "
@@ -129,7 +117,7 @@ public class HistoricoVisualizacaoDAO {
             ps.setInt(3, h.getMinutoParada());
             ps.setBoolean(4, h.isConcluido());
             ps.setString(5, h.getDispositivo());
-            ps.setInt(6, h.getIdVisualizacao()); // o "?" do WHERE
+            ps.setInt(6, h.getIdVisualizacao()); // id do WHERE
             return ps.executeUpdate() > 0; // false = nenhuma linha com esse id
         }
     }
@@ -144,11 +132,7 @@ public class HistoricoVisualizacaoDAO {
         }
     }
 
-    /**
-     * Converte a linha ATUAL do ResultSet em um objeto. As colunas da propria tabela
-     * vao para os atributos normais; as que vieram do JOIN (nome_perfil, nome_titulo, email_conta, nome_plano)
-     * vao para os campos so de exibicao.
-     */
+    /** Converte a linha atual do ResultSet em objeto. As colunas do JOIN vao para os campos de exibicao. */
     private HistoricoVisualizacao montar(ResultSet rs) throws SQLException {
         HistoricoVisualizacao h = new HistoricoVisualizacao();
         h.setIdVisualizacao(rs.getInt("id_visualizacao"));
@@ -160,7 +144,7 @@ public class HistoricoVisualizacaoDAO {
         h.setConcluido(rs.getBoolean("concluido"));
         h.setDispositivo(rs.getString("dispositivo"));
 
-        // Colunas vindas do INNER JOIN (5 tabelas), lidas pelo apelido (alias) do SELECT:
+        // Colunas do JOIN, lidas pelo apelido do SELECT:
         h.setNomePerfil(rs.getString("nome_perfil"));
         h.setNomeTitulo(rs.getString("nome_titulo"));
         h.setEmailConta(rs.getString("email_conta"));

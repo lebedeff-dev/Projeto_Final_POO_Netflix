@@ -9,27 +9,27 @@ import javax.swing.JPanel;
 import javax.swing.Timer;
 
 /**
- * Troca de tela sem "janelas empilhadas": a tela nova abre NO MESMO LUGAR e com o MESMO TAMANHO da
- * atual, a atual e fechada e o conteudo da nova aparece com um fade-in curto.
+ * Troca de tela sem empilhar janelas: a nova abre no mesmo lugar e com o mesmo tamanho da atual,
+ * a atual fecha e o conteudo da nova aparece com um fade-in curto.
  *
- * Por que nao usar Window.setOpacity? Porque ele nao funciona em janela com a barra de titulo do
- * Windows (lanca IllegalComponentStateException). Entao o fade e feito DENTRO da janela, com um
- * "vidro" (glass pane) pintado por cima do conteudo, que vai ficando transparente.
+ * Window.setOpacity nao serve, porque lanca IllegalComponentStateException em janela com barra
+ * de titulo do Windows. O fade acontece dentro da janela, com um glass pane pintado por cima do
+ * conteudo que vai ficando transparente.
  */
 public final class Navegador {
 
     private Navegador() {
     }
 
-    /** Fecha 'atual' e mostra 'nova' no mesmo lugar e com o mesmo tamanho (e maximizada, se a atual estava). */
+    /** Fecha a atual e mostra a nova no mesmo lugar e tamanho, maximizada se a atual estava. */
     public static void ir(JFrame atual, JFrame nova) {
         nova.setBounds(atual.getBounds());
         nova.setExtendedState(atual.getExtendedState());
         mostrarComFade(nova);
-        atual.dispose(); // a tela antiga some; a nova ja esta no lugar dela
+        atual.dispose(); // a nova ja esta no lugar
     }
 
-    /** Fecha 'origem' e abre 'nova' centralizada na tela (usado so da tela de conexao para o menu). */
+    /** Fecha a origem e abre a nova centralizada. So a tela de conexao usa, para ir ao menu. */
     public static void trocar(JFrame origem, JFrame nova) {
         nova.setLocationRelativeTo(null);
         mostrarComFade(nova);
@@ -37,7 +37,7 @@ public final class Navegador {
     }
 
     private static void mostrarComFade(JFrame nova) {
-        Veu veu = new Veu(nova.getContentPane().getBackground()); // veu da mesma cor do fundo da tela
+        Veu veu = new Veu(nova.getContentPane().getBackground()); // veu com a cor do fundo da tela
         nova.setGlassPane(veu);
         veu.setVisible(true);
         nova.setVisible(true);
@@ -55,7 +55,7 @@ public final class Navegador {
         relogio.start();
     }
 
-    /** Painel transparente que cobre a janela com uma cor; o 'alfa' vai de 1 (cobre tudo) a 0. */
+    /** Painel que cobre a janela com uma cor. O alfa vai de 1 (cobre tudo) a 0. */
     private static final class Veu extends JPanel {
         float alfa = 1f;
         private final Color cor;

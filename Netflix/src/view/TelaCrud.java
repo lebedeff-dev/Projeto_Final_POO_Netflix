@@ -20,21 +20,19 @@ import javax.swing.ListSelectionModel;
 import javax.swing.table.DefaultTableModel;
 
 /**
- * Tela base de CRUD (TEMPLATE METHOD): monta o layout padrao (formulario em cima,
- * tabela no meio, botoes embaixo) e liga os botoes. Cada tela filha so informa
- * QUAIS campos tem e CHAMA O SEU CONTROLLER nos metodos abstratos.
- * Heranca evita repetir o mesmo codigo de layout nas 5 telas.
+ * Tela base dos cadastros (Template Method). Monta o layout padrao (formulario em cima, tabela
+ * no meio, botoes embaixo) e liga os botoes. Cada filha informa seus campos e chama o seu
+ * Controller nos metodos abstratos, e a heranca evita repetir o layout nas 5 telas.
  *
- * O visual padrao (tabela e botoes) fica no TelaCrud.form; os campos de cada tela ficam
- * no .form da propria tela filha (ex.: TelaConta.form). Abra-os no IntelliJ para editar.
+ * A tabela e os botoes ficam no TelaCrud.form, e os campos de cada tela ficam no .form dela
+ * (por exemplo TelaConta.form).
  *
- * Regra do MVC: esta classe NAO tem regra de negocio nem acesso a banco.
- * Ela so le o que o usuario digitou, chama o Controller e mostra a mensagem devolvida.
+ * Esta classe nao tem regra de negocio nem acesso a banco: le o que foi digitado, chama o
+ * Controller e mostra a mensagem que volta.
  *
- * Convencao: as colunas da tabela sao [ID] + [um campo do formulario por coluna,
- * na mesma ordem]. Assim, ao clicar numa linha, copiamos as celulas para os campos.
- * Colunas EXTRAS so de exibicao (ex.: Conta e Plano no Historico) ficam no FIM da tabela:
- * como nao tem campo no formulario, sao ignoradas ao copiar a linha.
+ * Convencao: as colunas da tabela sao o ID mais um campo do formulario por coluna, na mesma
+ * ordem, para copiar a linha selecionada para os campos. Colunas so de exibicao (como Conta e
+ * Plano no historico) ficam no fim e a copia ignora.
  */
 public abstract class TelaCrud extends JFrame {
     {
@@ -56,25 +54,23 @@ public abstract class TelaCrud extends JFrame {
     protected JTable tabela;
 
     /**
-     * DefaultTableModel = a "planilha em memoria" que o JTable exibe.
-     * O JTable apenas DESENHA o que esta no modelo. Para mudar a tabela, mudamos
-     * o modelo: setRowCount(0) apaga as linhas e addRow(Object[]) adiciona uma
-     * (cada posicao do vetor = uma coluna).
+     * DefaultTableModel e a "planilha em memoria" que o JTable desenha. Para mudar a tabela,
+     * muda-se o modelo: setRowCount(0) apaga as linhas e addRow(Object[]) adiciona uma, com uma
+     * posicao do vetor por coluna.
      */
     protected final DefaultTableModel modelo;
 
-    private final Map<String, JComponent> campos = new LinkedHashMap<>(); // rotulo -> componente (mantem a ordem)
+    private final Map<String, JComponent> campos = new LinkedHashMap<>(); // rotulo -> componente, na ordem de cadastro
 
-    // true enquanto o programa (e nao o usuario) muda a selecao da tabela; evita que o
-    // formulario seja sobrescrito com os valores da linha quando recarregamos a tabela.
+    // true enquanto o programa muda a selecao da tabela, para o formulario nao ser
+    // sobrescrito ao recarregar.
     private boolean recarregandoTabela = false;
 
     protected TelaCrud(String titulo, String[] colunas) {
         super(titulo);
-        setContentPane(painelRaiz); // o layout montado no TelaCrud.form
+        setContentPane(painelRaiz); // layout do TelaCrud.form
 
-        // Modelo com os nomes das colunas e 0 linhas. Sobrescrevemos isCellEditable
-        // para a tabela ser so de leitura (a edicao e feita pelo formulario).
+        // Modelo com as colunas e sem linhas. isCellEditable devolve false: a edicao e pelo formulario.
         modelo = new DefaultTableModel(colunas, 0) {
             @Override
             public boolean isCellEditable(int linha, int coluna) {
@@ -85,43 +81,43 @@ public abstract class TelaCrud extends JFrame {
         tabela.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
     }
 
-    // ---------- metodos que cada tela filha implementa ----------
+    // ---------- implementados pelas telas filhas ----------
 
-    /** Busca a lista no Controller e preenche o 'modelo' (addRow para cada objeto). */
+    /** Busca a lista no Controller e preenche o modelo. */
     protected abstract void carregarTabela();
 
-    /** Le os campos, chama controller.inserir(...) e devolve a mensagem de resultado. */
+    /** Le os campos, chama o Controller e devolve a mensagem. */
     protected abstract String inserir();
 
-    /** Idem para atualizar; 'id' e o ID da linha selecionada na tabela. */
+    /** Igual ao inserir, com o id da linha selecionada. */
     protected abstract String atualizar(String id);
 
-    /** Idem para eliminar. */
+    /** Igual ao atualizar, para remover. */
     protected abstract String eliminar(String id);
 
-    /** Gancho opcional: a tela filha pode acrescentar botoes proprios ao lado de Inserir, Alterar, Remover e Limpar. */
+    /** Opcional: a filha acrescenta botoes ao lado de Inserir, Alterar, Remover e Limpar. */
     protected void acrescentarBotoes(JPanel painelBotoes) {
     }
 
-    /** Gancho opcional: preenche os combos de chave estrangeira (ex.: lista de planos). */
+    /** Opcional: preenche os combos de FK, como a lista de planos. */
     protected void carregarCombos() {
     }
 
-    /** Gancho opcional: valores iniciais dos campos (ex.: data de hoje). */
+    /** Opcional: valores iniciais dos campos. */
     protected void definirPadroes() {
     }
 
     // ---------- campos do formulario ----------
 
     /**
-     * Registra um campo que ja existe no .form da tela filha. O 'rotulo' e o nome usado em
-     * valor(...) e definirValor(...); a ORDEM das chamadas e a das colunas da tabela.
+     * Registra um campo do .form da filha. O rotulo e o nome usado em valor() e definirValor(),
+     * e a ordem das chamadas e a das colunas da tabela.
      */
     protected void adicionarCampo(String rotulo, JComponent componente) {
         campos.put(rotulo, componente);
     }
 
-    /** Troca os itens de um combo pelos itens da lista (usado nos combos de FK). */
+    /** Troca os itens de um combo pelos da lista. */
     protected void preencherCombo(JComboBox<String> combo, List<String> opcoes) {
         combo.removeAllItems();
         for (String opcao : opcoes) {
@@ -129,7 +125,7 @@ public abstract class TelaCrud extends JFrame {
         }
     }
 
-    /** Le um campo como texto (JTextField ou JComboBox). A View entrega tudo como String ao Controller. */
+    /** Le um campo (JTextField ou JComboBox) como texto. */
     protected String valor(String rotulo) {
         JComponent c = campos.get(rotulo);
         if (c instanceof JComboBox) {
@@ -139,14 +135,14 @@ public abstract class TelaCrud extends JFrame {
         return ((JTextField) c).getText();
     }
 
-    /** Coloca um texto no campo pelo rotulo (sobrecarga do metodo abaixo). */
+    /** Coloca um texto no campo pelo rotulo. */
     protected void definirValor(String rotulo, String texto) {
         definirValor(campos.get(rotulo), texto);
     }
 
     private void definirValor(JComponent c, String texto) {
         if (c instanceof JComboBox) {
-            // Seleciona no combo o item igual ao texto (ex.: "3 - Premium").
+            // Seleciona no combo o item igual ao texto, como "3 - Premium".
             ((JComboBox<?>) c).setSelectedItem(texto);
         } else {
             ((JTextField) c).setText(texto);
@@ -156,29 +152,23 @@ public abstract class TelaCrud extends JFrame {
     // ---------- montagem da tela ----------
 
     /**
-     * Deve ser chamado no FINAL do construtor da tela filha (depois dos campos
-     * registrados). Nao fazemos isso no construtor da base porque os atributos da filha
-     * (como o controller) ainda nao existiriam nesse momento.
+     * A filha chama no fim do construtor, depois de registrar os campos. A base nao pode fazer
+     * isso no proprio construtor, porque os atributos da filha (como o controller) ainda nao existem.
      *
-     * @param painelCampos o painel do formulario, montado no .form da tela filha
+     * @param painelCampos o painel do formulario, montado no .form da filha
      */
     protected void iniciar(JPanel painelCampos) {
         painelFormulario.add(painelCampos, BorderLayout.CENTER);
 
-        /*
-         * EVENTOS DOS BOTOES (ActionListener):
-         * addActionListener registra "o que fazer quando o botao for clicado".
-         * "e -> ..." e uma LAMBDA, forma curta de escrever:
-         *     new ActionListener() { public void actionPerformed(ActionEvent e) { ... } }
-         * O clique NAO tem logica: chama o metodo da tela filha (que chama o
-         * Controller) e mostra a mensagem que voltou.
-         */
+        // addActionListener registra o que fazer no clique. "e -> ..." e uma lambda, a forma curta
+        // de new ActionListener() { ... }. O clique nao tem logica: chama o metodo da filha, que
+        // chama o Controller, e mostra a mensagem.
         btnInserir.addActionListener(e -> mostrarResultado(inserir()));
         btnAtualizar.addActionListener(e -> mostrarResultado(atualizar(idSelecionado())));
         btnEliminar.addActionListener(e -> confirmarEliminar());
         btnLimpar.addActionListener(e -> limpar());
 
-        // Clicar numa linha da tabela copia os valores dela para o formulario (para editar).
+        // Clicar numa linha copia os valores para o formulario.
         tabela.getSelectionModel().addListSelectionListener(e -> {
             if (!e.getValueIsAdjusting() && !recarregandoTabela && tabela.getSelectedRow() >= 0) {
                 aoSelecionar();
@@ -187,22 +177,22 @@ public abstract class TelaCrud extends JFrame {
 
         acrescentarBotoes(painelBotoes);
 
-        // Topo: a barra de navegacao (igual em todas as telas) fica acima do formulario.
+        // Barra de navegacao no topo, igual nas outras telas.
         painelBarra.add(new BarraNavegacao(this, nomeNaBarra(), null), BorderLayout.CENTER);
 
         setSize(950, 600);
         setLocationRelativeTo(null);
-        setDefaultCloseOperation(EXIT_ON_CLOSE); // so ha uma janela por vez (o Navegador troca); fechar encerra o programa
+        setDefaultCloseOperation(EXIT_ON_CLOSE); // ha uma janela por vez (o Navegador troca), entao fechar encerra o programa
 
         recarregar(true);
     }
 
-    /** Nome do botao da barra que corresponde a esta tela (o titulo da janela e maior: "Histórico de Visualização"). */
+    /** Nome do botao da barra para esta tela. O titulo do historico e maior que o botao. */
     private String nomeNaBarra() {
         return getTitle().startsWith("Hist") ? "Histórico" : getTitle();
     }
 
-    /** Copia as celulas da linha selecionada para os campos (coluna 0 = ID, nao tem campo). */
+    /** Copia as celulas da linha selecionada para os campos. A coluna 0 e o id e nao tem campo. */
     private void aoSelecionar() {
         int linha = tabela.getSelectedRow();
         int coluna = 1;
@@ -212,9 +202,9 @@ public abstract class TelaCrud extends JFrame {
         }
     }
 
-    /** Pede confirmacao antes de apagar; so elimina se o usuario clicar em "Sim". */
+    /** So remove se o usuario confirmar com "Sim". */
     private void confirmarEliminar() {
-        if (idSelecionado().isEmpty()) { // nada selecionado: o Controller devolve o aviso, sem perguntar nada antes
+        if (idSelecionado().isEmpty()) { // nada selecionado: o Controller avisa, sem perguntar antes
             mostrarResultado(eliminar(""));
             return;
         }
@@ -226,9 +216,8 @@ public abstract class TelaCrud extends JFrame {
     }
 
     /**
-     * Depois de toda acao: mostra a mensagem do Controller e recarrega a tabela.
-     * O formulario so e limpo quando deu certo (mensagem com "sucesso"). Se deu erro,
-     * o usuario mantem o que digitou e so corrige o campo errado.
+     * Mostra a mensagem do Controller e recarrega a tabela. O formulario so e limpo se deu certo
+     * (mensagem com "sucesso"). Se deu erro, o texto digitado fica para corrigir.
      */
     private void mostrarResultado(String mensagem) {
         JOptionPane.showMessageDialog(this, mensagem);
@@ -237,12 +226,12 @@ public abstract class TelaCrud extends JFrame {
     }
 
     /**
-     * Busca tudo de novo no banco: combos e tabela. Se o banco estiver fora do ar,
-     * o Controller lanca RuntimeException e aqui mostramos a mensagem.
+     * Busca combos e tabela de novo no banco. Se o banco estiver fora do ar, o Controller lanca
+     * RuntimeException e a mensagem aparece aqui.
      *
-     * limparFormulario = false (depois de um erro): recarregar os combos os volta para o
-     * primeiro item e a tabela perde a selecao, entao guardamos a escolha de cada combo e
-     * a linha selecionada e restauramos tudo no fim.
+     * Com limparFormulario false (depois de um erro), recarregar volta os combos ao primeiro item
+     * e a tabela perde a selecao. Por isso guardamos a escolha de cada combo e a linha selecionada
+     * e restauramos no fim.
      */
     private void recarregar(boolean limparFormulario) {
         Map<JComboBox<?>, Object> escolhidos = new HashMap<>();
@@ -300,7 +289,7 @@ public abstract class TelaCrud extends JFrame {
         definirPadroes();
     }
 
-    /** ID (coluna 0) da linha selecionada; "" se nada estiver selecionado (o Controller avisa). */
+    /** Id da linha selecionada (coluna 0), ou "" se nada estiver selecionado. */
     private String idSelecionado() {
         int linha = tabela.getSelectedRow();
         return linha < 0 ? "" : modelo.getValueAt(linha, 0).toString();

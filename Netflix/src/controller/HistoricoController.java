@@ -12,17 +12,14 @@ import model.Perfil;
 import model.Titulo;
 import util.Conversor;
 
-/**
- * CONTROLLER do CRUD principal (Historico de Visualizacao).
- * Aqui ha regras de negocio de verdade (ver montar()).
- */
+/** Controller do CRUD principal (historico). As regras de negocio estao no montar(). */
 public class HistoricoController {
 
     private final HistoricoVisualizacaoDAO dao = new HistoricoVisualizacaoDAO();
     private final PerfilDAO perfilDAO = new PerfilDAO();
     private final TituloDAO tituloDAO = new TituloDAO();
 
-    /** Lista com NOMES (resultado do INNER JOIN do DAO) para a tabela da tela. */
+    /** Lista com nomes, vinda do INNER JOIN do DAO. */
     public List<HistoricoVisualizacao> listarComNomes() {
         try {
             return dao.listarComNomes();
@@ -31,13 +28,13 @@ public class HistoricoController {
         }
     }
 
-    /** Duracao em minutos do titulo escolhido (null se for serie ou se o titulo nao existir). */
+    /** Duracao do titulo em minutos, ou null se for serie ou nao existir. */
     private Integer duracaoDoTitulo(int idTitulo) throws SQLException {
         Titulo t = tituloDAO.buscarPorId(idTitulo);
         return t == null ? null : t.getDuracaoMinutos();
     }
 
-    /** Opcoes do combo de perfis ("id - nome"). */
+    /** Itens do combo de perfis, no formato "id - nome". */
     public List<String> opcoesPerfis() {
         try {
             List<String> opcoes = new ArrayList<>();
@@ -107,18 +104,18 @@ public class HistoricoController {
         int minuto = Conversor.paraInt(minutoParada, "Minuto de parada");
         int idTitulo = Conversor.extrairId(titulo, "Título");
 
-        // Regras de negocio (ficam no Controller, nunca na View):
+        // Regras de negocio:
         if (minuto < 0) {
             throw new IllegalArgumentException("O minuto de parada não pode ser negativo.");
         }
         boolean terminou = Conversor.paraBoolean(concluido);
-        Integer duracao = duracaoDoTitulo(idTitulo); // null para series (a duracao fica nos episodios)
+        Integer duracao = duracaoDoTitulo(idTitulo); // null para series
         if (duracao != null) {
             if (minuto > duracao) {
                 throw new IllegalArgumentException("O minuto de parada (" + minuto
                         + ") não pode passar da duração do título (" + duracao + " min).");
             }
-            // Concluido e minuto precisam concordar: so terminou quem parou no ultimo minuto.
+            // Concluido e minuto tem que concordar: so terminou quem parou no ultimo minuto.
             if (terminou && minuto != duracao) {
                 throw new IllegalArgumentException("Para marcar como concluído, o minuto de parada deve ser "
                         + duracao + " (a duração do título).");

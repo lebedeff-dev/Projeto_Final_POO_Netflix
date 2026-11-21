@@ -1,10 +1,7 @@
 package model;
 
 
-/**
- * Entidade Titulo (tabela "titulo"): um item do catalogo (filme, serie...).
- * E independente: nao tem FK. Quem aponta para ele e o historico_visualizacao.
- */
+/** Item do catalogo (tabela titulo). Nao tem FK; quem aponta para ele e o historico. */
 public class Titulo {
 
     private int idTitulo;
@@ -13,7 +10,7 @@ public class Titulo {
     private String tipo;                     // ENUM('Filme','Serie','Documentario','Stand-up')
     private int anoLancamento;               // SMALLINT
     private String classificacaoIndicativa;  // ENUM('L','10','12','14','16','18')
-    private Integer duracaoMinutos;          // Integer (objeto) porque pode ser NULL em series
+    private Integer duracaoMinutos;          // Integer porque serie nao tem duracao (NULL)
     private String idiomaOriginal;
     private boolean disponivel;              // TINYINT(1)
 

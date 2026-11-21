@@ -15,8 +15,8 @@ import com.intellij.uiDesigner.core.GridLayoutManager;
 import controller.ConexaoController;
 
 /**
- * Tela Inicio (menu principal). Cada botao abre uma tela; o fluxo da apresentacao e de cima para baixo.
- * O visual fica no TelaPrincipal.form: abra-o no IntelliJ para editar.
+ * Tela inicial (menu). Cada botao abre uma tela, na ordem da apresentacao.
+ * O visual fica no TelaPrincipal.form.
  */
 public class TelaPrincipal extends JFrame {
     {
@@ -39,7 +39,7 @@ public class TelaPrincipal extends JFrame {
 
     public TelaPrincipal() {
         super("Netflix - Sistema de Gerenciamento");
-        setContentPane(painelRaiz); // o layout montado no TelaPrincipal.form
+        setContentPane(painelRaiz); // layout do TelaPrincipal.form
 
         JButton btnRestaurar = new JButton("Restaurar dados");
 
@@ -51,7 +51,7 @@ public class TelaPrincipal extends JFrame {
         btnHistorico.addActionListener(e -> Navegador.ir(this, new TelaHistorico()));
         btnRestaurar.addActionListener(e -> restaurar());
 
-        // A barra do topo e a mesma de todas as telas; aqui acrescentamos o botao "Restaurar dados" a direita.
+        // Barra do topo, com o botao Restaurar dados na direita.
         painelBarra.add(new BarraNavegacao(this, "Início", btnRestaurar), BorderLayout.CENTER);
         pack();
         setSize(Math.max(getWidth(), 950), Math.max(getHeight(), 450)); // largura para caber a barra
@@ -59,7 +59,7 @@ public class TelaPrincipal extends JFrame {
         setDefaultCloseOperation(EXIT_ON_CLOSE); // fechar o menu encerra o programa
     }
 
-    /** Apaga o banco e cria de novo com os dados do script (util antes da apresentacao). */
+    /** Apaga o banco e recria com os dados do script. */
     private void restaurar() {
         int resposta = JOptionPane.showConfirmDialog(this,
                 "Isso apaga TODOS os dados e volta aos dados de exemplo. Continuar?",

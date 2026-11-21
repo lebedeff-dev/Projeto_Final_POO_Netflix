@@ -1,12 +1,7 @@
 package model;
 
 
-/**
- * Entidade Conta (tabela "conta").
- * Relacionamento: cada Conta pertence a UM Plano (FK id_plano).
- * Guardamos apenas o id do plano (idPlano), igual ao banco;
- * o nome do plano pode ser buscado depois, se a tela precisar.
- */
+/** Conta de usuario (tabela conta). Cada conta pertence a um plano (id_plano). */
 public class Conta {
 
     private int idConta;
@@ -17,8 +12,7 @@ public class Conta {
     private String pais;             // CHAR(2), ex.: "BR"
     private String status;           // ENUM('Ativa','Suspensa','Cancelada')
 
-    // Campo so de EXIBICAO (nao existe na tabela conta): preenchido pelo INNER JOIN
-    // com a tabela plano no ContaDAO.listar(), para a tela mostrar "3 - Premium".
+    // So para exibir, nao existe na tabela. O ContaDAO.listar() preenche via INNER JOIN com plano.
     private String nomePlano;
 
     public Conta() {

@@ -10,9 +10,7 @@ import java.util.List;
 import model.Perfil;
 import util.ConnectionFactory;
 
-/**
- * DAO de Perfil. Mesma estrutura do PlanoDAO. A FK id_conta liga o perfil a sua conta.
- */
+/** DAO de Perfil, no molde do PlanoDAO. A FK id_conta liga o perfil a sua conta. */
 public class PerfilDAO {
 
     public void inserir(Perfil p) throws SQLException {
@@ -26,13 +24,13 @@ public class PerfilDAO {
             ps.setString(2, p.getNome());
             ps.setString(3, p.getAvatar());
             ps.setBoolean(4, p.isPerfilInfantil());
-            ps.setString(5, p.getPin()); // pin e opcional (null -> NULL)
+            ps.setString(5, p.getPin()); // PIN e opcional
             ps.executeUpdate();
         }
     }
 
     public List<Perfil> listar() throws SQLException {
-        // INNER JOIN com conta: traz tambem o e-mail da conta dona do perfil.
+        // INNER JOIN com conta para trazer o e-mail da conta dona do perfil.
         String sql = "SELECT p.id_perfil, p.id_conta, p.nome, p.avatar, p.perfil_infantil, "
                    + "p.pin, c.email AS email_conta "
                    + "FROM perfil p INNER JOIN conta c ON c.id_conta = p.id_conta "
@@ -75,7 +73,7 @@ public class PerfilDAO {
         }
     }
 
-    /** Ao eliminar o perfil, o historico dele e apagado junto (ON DELETE CASCADE). */
+    /** O historico do perfil e apagado junto (ON DELETE CASCADE). */
     public boolean eliminar(int idPerfil) throws SQLException {
         String sql = "DELETE FROM perfil WHERE id_perfil = ?";
 

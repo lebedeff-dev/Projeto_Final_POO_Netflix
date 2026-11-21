@@ -18,11 +18,9 @@ import com.intellij.uiDesigner.core.GridLayoutManager;
 import controller.ConexaoController;
 
 /**
- * Primeira tela do sistema: pede os dados do MySQL de quem esta rodando.
- * Os campos ja vem com o que foi salvo da ultima vez (config.properties).
- * Ao conectar, o banco "netflix" e criado sozinho se ainda nao existir.
- *
- * O visual fica no TelaConexao.form: abra-o no IntelliJ para editar.
+ * Primeira tela do sistema: pede os dados do MySQL. Os campos vem preenchidos com o que ficou
+ * salvo no config.properties. Ao conectar, o banco netflix e criado se ainda nao existir.
+ * O visual fica no TelaConexao.form.
  */
 public class TelaConexao extends JFrame {
     {
@@ -44,7 +42,7 @@ public class TelaConexao extends JFrame {
 
     public TelaConexao() {
         super("Netflix - Conectar ao MySQL");
-        setContentPane(painelRaiz); // o layout montado no TelaConexao.form
+        setContentPane(painelRaiz); // layout do TelaConexao.form
 
         campoServidor.setText(controller.servidorSalvo());
         campoPorta.setText(controller.portaSalva());
@@ -62,11 +60,11 @@ public class TelaConexao extends JFrame {
     private void conectar() {
         String erro = controller.conectar(campoServidor.getText(), campoPorta.getText(),
                 campoUsuario.getText(), new String(campoSenha.getPassword()));
-        if (erro == null) {          // deu certo: fecha esta tela e abre o menu
+        if (erro == null) {          // conectou: troca para o menu
             if (controller.getAviso() != null) {
                 JOptionPane.showMessageDialog(this, controller.getAviso(), "Aviso", JOptionPane.WARNING_MESSAGE);
             }
-            Navegador.trocar(this, new TelaPrincipal()); // abre o menu com fade e fecha esta tela
+            Navegador.trocar(this, new TelaPrincipal()); // abre o menu e fecha esta tela
         } else {
             JOptionPane.showMessageDialog(this, erro, "Erro de conexão", JOptionPane.ERROR_MESSAGE);
         }

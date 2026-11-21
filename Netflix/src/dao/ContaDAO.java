@@ -11,10 +11,8 @@ import model.Conta;
 import util.ConnectionFactory;
 
 /**
- * DAO de Conta. Mesma estrutura do PlanoDAO (veja os comentarios la sobre
- * PreparedStatement, try-with-resources e mapeamento camelCase/snake_case).
- * Novidade aqui: a coluna id_plano e uma CHAVE ESTRANGEIRA, entao gravamos so o
- * numero do plano; o MySQL garante que ele existe (integridade referencial).
+ * DAO de Conta, no molde do PlanoDAO. id_plano e FK: gravamos so o numero e o MySQL confere
+ * se o plano existe.
  */
 public class ContaDAO {
 
@@ -28,7 +26,7 @@ public class ContaDAO {
             ps.setInt(1, c.getIdPlano());
             ps.setString(2, c.getEmail());
             ps.setString(3, c.getSenhaHash());
-            ps.setString(4, c.getTelefone()); // setString aceita null -> grava NULL no banco
+            ps.setString(4, c.getTelefone()); // null vira NULL no banco
             ps.setString(5, c.getPais());
             ps.setString(6, c.getStatus());
             ps.executeUpdate();
@@ -36,8 +34,7 @@ public class ContaDAO {
     }
 
     public List<Conta> listar() throws SQLException {
-        // INNER JOIN com plano: alem do id_plano (FK) trazemos o NOME do plano,
-        // para a tela mostrar "3 - Premium" em vez de so "3".
+        // INNER JOIN com plano para trazer o nome junto do id_plano.
         String sql = "SELECT c.id_conta, c.id_plano, c.email, c.senha_hash, c.telefone, c.pais, "
                    + "c.status, p.nome AS nome_plano "
                    + "FROM conta c INNER JOIN plano p ON p.id_plano = c.id_plano "
@@ -54,7 +51,7 @@ public class ContaDAO {
                 c.setIdPlano(rs.getInt("id_plano"));
                 c.setEmail(rs.getString("email"));
                 c.setSenhaHash(rs.getString("senha_hash"));
-                c.setTelefone(rs.getString("telefone")); // NULL do banco vira null no Java
+                c.setTelefone(rs.getString("telefone")); // NULL vira null
                 c.setPais(rs.getString("pais"));
                 c.setStatus(rs.getString("status"));
                 c.setNomePlano(rs.getString("nome_plano")); // coluna que veio do JOIN
@@ -82,7 +79,7 @@ public class ContaDAO {
         }
     }
 
-    /** Falha (SQLException) se a conta ainda tiver perfis: protecao da chave estrangeira. */
+    /** Lanca SQLException se a conta ainda tiver perfis (FK). */
     public boolean eliminar(int idConta) throws SQLException {
         String sql = "DELETE FROM conta WHERE id_conta = ?";
 

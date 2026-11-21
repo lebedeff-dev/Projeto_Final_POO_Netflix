@@ -18,7 +18,7 @@ import util.Conversor;
 
 /**
  * Tela do CRUD de Perfil. O combo de contas vem do Controller.
- * Os campos (rotulos, combos e seus itens) ficam no TelaPerfil.form: abra-o no IntelliJ para editar.
+ * Os campos ficam no TelaPerfil.form, que se edita no IntelliJ.
  */
 public class TelaPerfil extends TelaCrud {
     {
@@ -54,7 +54,7 @@ public class TelaPerfil extends TelaCrud {
         preencherCombo(comboConta, controller.opcoesContas());
     }
 
-    /** A coluna Conta mostra "1 - ana.silva@email.com" (id + e-mail vindo do INNER JOIN). */
+    /** A coluna Conta mostra "1 - ana.silva@email.com" (id e e-mail do INNER JOIN). */
     @Override
     protected void carregarTabela() {
         for (Perfil p : controller.listar()) {

@@ -9,56 +9,48 @@ import java.sql.SQLException;
 import java.util.Properties;
 
 /**
- * Fabrica de conexoes JDBC.
+ * Fabrica de conexoes JDBC. Servidor, porta, usuario e senha ficam aqui, e os DAOs so chamam
+ * getConnection(). A TelaConexao define esses valores e eles vao para o config.properties,
+ * ao lado do Netflix.jar.
  *
- * Por que uma classe so para isso?
- *  - Os dados de conexao (servidor, porta, usuario, senha) ficam em UM unico lugar.
- *    Os DAOs so precisam chamar ConnectionFactory.getConnection().
- *  - Na versao principal esses dados NAO ficam mais fixos no codigo: a TelaConexao pergunta ao
- *    usuario e eles sao salvos no arquivo config.properties (ao lado do Netflix.jar).
- *    Assim ninguem precisa editar o codigo e recompilar para mudar a senha.
- *
- * O driver (mysql-connector-j) ja vem dentro do Netflix.jar. Desde o JDBC 4 ele e
- * carregado sozinho pelo DriverManager, por isso nao precisamos de Class.forName.
+ * O driver vai dentro do jar e o DriverManager o carrega sozinho (JDBC 4), sem Class.forName.
  */
 public class ConnectionFactory {
 
     private static final String BANCO = "netflix";
     private static final String ARQUIVO_CONFIG = "config.properties";
 
-    // Valores padrao (os mais comuns em um MySQL instalado na propria maquina).
+    // Padrao de um MySQL instalado na propria maquina.
     private static String servidor = "localhost";
     private static int porta = 3306;
     private static String usuario = "root";
     private static String senha = "";
 
-    // Construtor privado: a classe so tem metodos estaticos, ninguem precisa dar "new".
+    // So metodos estaticos, entao nao precisa de instancia.
     private ConnectionFactory() {
     }
 
-    /** Conexao com o banco "netflix". Usada por todos os DAOs. */
+    /** Conexao com o banco netflix, usada pelos DAOs. */
     public static Connection getConnection() throws SQLException {
         return DriverManager.getConnection(montarUrl(BANCO), usuario, senha);
     }
 
-    /** Conexao com o servidor MySQL sem escolher banco (usada para criar o banco "netflix"). */
+    /** Conexao com o servidor, sem escolher banco. Serve para criar o banco netflix. */
     public static Connection getConnectionServidor() throws SQLException {
         return DriverManager.getConnection(montarUrl(""), usuario, senha);
     }
 
     // jdbc:mysql://servidor:porta/banco?parametros
-    // useSSL=false e allowPublicKeyRetrieval=true evitam erros comuns em MySQL local;
-    // connectionTimeZone=LOCAL: o driver usa o fuso do proprio computador para converter datas. Antes
-    // estava fixo em America/Sao_Paulo e, num computador com outro fuso, o horario lido aparecia
-    // deslocado (ex.: 20:00 gravado aparecia como 23:00). Com LOCAL o horario digitado e o mostrado
-    // sao sempre iguais, em qualquer computador.
+    // useSSL=false e allowPublicKeyRetrieval=true evitam erros comuns em MySQL local.
+    // connectionTimeZone=LOCAL usa o fuso do computador. Com o fuso fixo em America/Sao_Paulo,
+    // 20:00 gravado aparecia como 23:00 em computadores de outro fuso.
     private static String montarUrl(String banco) {
         return "jdbc:mysql://" + servidor + ":" + porta + "/" + banco
                 + "?useSSL=false&allowPublicKeyRetrieval=true"
                 + "&connectionTimeZone=LOCAL&forceConnectionTimeZoneToSession=false";
     }
 
-    /** Troca os dados de conexao (chamado pela tela de conexao, via ConexaoController). */
+    /** Troca os dados de conexao. A TelaConexao chama via ConexaoController. */
     public static void configurar(String novoServidor, int novaPorta, String novoUsuario, String novaSenha) {
         servidor = novoServidor;
         porta = novaPorta;
@@ -66,7 +58,7 @@ public class ConnectionFactory {
         senha = novaSenha;
     }
 
-    /** Le o config.properties, se existir (na primeira execucao ele ainda nao existe). */
+    /** Le o config.properties, se existir. */
     public static void carregarConfiguracao() {
         Properties config = new Properties();
         try (FileInputStream arquivo = new FileInputStream(ARQUIVO_CONFIG)) {
@@ -76,11 +68,11 @@ public class ConnectionFactory {
             usuario = config.getProperty("usuario", usuario);
             senha = config.getProperty("senha", senha);
         } catch (IOException | NumberFormatException e) {
-            // Arquivo inexistente ou invalido: ficam os valores padrao.
+            // Arquivo ausente ou invalido: ficam os valores padrao.
         }
     }
 
-    /** Grava os dados atuais no config.properties para a proxima execucao. */
+    /** Grava os dados atuais no config.properties. */
     public static void salvarConfiguracao() throws IOException {
         Properties config = new Properties();
         config.setProperty("servidor", servidor);

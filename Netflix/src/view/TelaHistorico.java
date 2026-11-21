@@ -18,14 +18,13 @@ import model.HistoricoVisualizacao;
 import util.Conversor;
 
 /**
- * Tela do CRUD PRINCIPAL: Historico de Visualizacao.
- * A tabela mostra o resultado do INNER JOIN (listarComNomes): as colunas "Perfil"
- * e "Título" exibem "1 - Ana" e "1 - Stranger Things", e nao so os IDs guardados no banco.
+ * Tela do CRUD principal (historico). A tabela mostra o INNER JOIN de listarComNomes, entao as
+ * colunas Perfil e Titulo trazem "1 - Ana" e "1 - Stranger Things" em vez de so ids.
  *
- * As datas "Inicio" e "Ultima visualizacao" NAO sao digitadas: quem grava e o MySQL (NOW()) no
- * inserir (as duas) e no atualizar (so a ultima). Aparecem na tabela apenas para consulta.
+ * As datas de inicio e de ultima visualizacao nao sao digitadas: o MySQL grava com NOW() no
+ * inserir (as duas) e no atualizar (so a ultima). Aparecem na tabela so para consulta.
  *
- * Os campos (rotulos, combos e seus itens) ficam no TelaHistorico.form: abra-o no IntelliJ para editar.
+ * Os campos ficam no TelaHistorico.form, que se edita no IntelliJ.
  */
 public class TelaHistorico extends TelaCrud {
     {
@@ -63,11 +62,7 @@ public class TelaHistorico extends TelaCrud {
         preencherCombo(comboTitulo, controller.opcoesTitulos());
     }
 
-    /**
-     * Cada objeto da lista do INNER JOIN vira uma linha. getNomePerfil()/getNomeTitulo()
-     * foram preenchidos pelo JOIN. O ID do registro (coluna 0) e o que os botoes
-     * Alterar e Remover usam.
-     */
+    /** Cada objeto do INNER JOIN vira uma linha. O id (coluna 0) e o que Alterar e Remover usam. */
     @Override
     protected void carregarTabela() {
         for (HistoricoVisualizacao h : controller.listarComNomes()) {
@@ -77,7 +72,7 @@ public class TelaHistorico extends TelaCrud {
                     h.getMinutoParada(), Conversor.simNao(h.isConcluido()), h.getDispositivo(),
                     Conversor.formatarDataHora(h.getDataInicio()),
                     Conversor.formatarDataHora(h.getDataUltimaVisualizacao()),
-                    h.getEmailConta(), h.getNomePlano()}); // Inicio, Ultima, Conta e Plano: so exibicao (sem campo no formulario)
+                    h.getEmailConta(), h.getNomePlano()}); // Inicio, Ultima, Conta e Plano so aparecem na tabela, sem campo no formulario
         }
     }
 
@@ -96,7 +91,7 @@ public class TelaHistorico extends TelaCrud {
         return controller.eliminar(id);
     }
 
-    /** O relatorio e da rotina principal (Historico): o botao fica junto dos demais e abre a TelaRelatorio. */
+    /** Botao que abre a TelaRelatorio, ao lado dos demais. */
     @Override
     protected void acrescentarBotoes(JPanel painelBotoes) {
         JButton btnRelatorio = new JButton("Relatório");

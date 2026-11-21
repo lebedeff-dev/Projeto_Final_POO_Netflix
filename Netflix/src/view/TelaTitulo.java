@@ -18,7 +18,7 @@ import util.Conversor;
 
 /**
  * Tela do CRUD de Titulo (catalogo).
- * Os campos (rotulos, combos e seus itens) ficam no TelaTitulo.form: abra-o no IntelliJ para editar.
+ * Os campos ficam no TelaTitulo.form, que se edita no IntelliJ.
  */
 public class TelaTitulo extends TelaCrud {
     {

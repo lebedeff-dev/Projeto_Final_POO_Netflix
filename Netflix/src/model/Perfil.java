@@ -1,11 +1,7 @@
 package model;
 
 
-/**
- * Entidade Perfil (tabela "perfil").
- * Relacionamento: cada Perfil pertence a UMA Conta (FK id_conta);
- * uma Conta pode ter varios Perfis (1:N).
- */
+/** Perfil dentro de uma conta (tabela perfil). Uma conta tem varios perfis (id_conta). */
 public class Perfil {
 
     private int idPerfil;
@@ -15,8 +11,7 @@ public class Perfil {
     private boolean perfilInfantil;  // perfil_infantil (TINYINT(1))
     private String pin;              // CHAR(4), opcional
 
-    // Campo so de EXIBICAO (nao existe na tabela perfil): preenchido pelo INNER JOIN
-    // com a tabela conta no PerfilDAO.listar(), para a tela mostrar "1 - ana@email.com".
+    // So para exibir, nao existe na tabela. O PerfilDAO.listar() preenche via INNER JOIN com conta.
     private String emailConta;
 
     public Perfil() {

@@ -17,8 +17,8 @@ import model.Conta;
 import util.Conversor;
 
 /**
- * Tela do CRUD de Conta. O combo de planos e preenchido com opcoes que o Controller fornece.
- * Os campos (rotulos, combos e seus itens) ficam no TelaConta.form: abra-o no IntelliJ para editar.
+ * Tela do CRUD de Conta. O combo de planos vem do Controller.
+ * Os campos ficam no TelaConta.form, que se edita no IntelliJ.
  */
 public class TelaConta extends TelaCrud {
     {
@@ -57,7 +57,7 @@ public class TelaConta extends TelaCrud {
         preencherCombo(comboPlano, controller.opcoesPlanos());
     }
 
-    /** A coluna Plano mostra "3 - Premium" (id + nome vindo do INNER JOIN), igual ao combo. */
+    /** A coluna Plano mostra "3 - Premium" (id e nome do INNER JOIN), igual ao combo. */
     @Override
     protected void carregarTabela() {
         for (Conta c : controller.listar()) {

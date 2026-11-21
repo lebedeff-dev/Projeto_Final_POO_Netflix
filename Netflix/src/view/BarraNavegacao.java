@@ -12,15 +12,10 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 /**
- * Barra do topo, igual em todas as telas: a marca NETFLIX e um botao para cada tela
- * (Inicio, Planos, Contas, Perfis, Titulos e Historico). O botao da tela
- * onde o usuario esta fica desabilitado.
+ * Barra do topo, igual em todas as telas: a marca NETFLIX e um botao para cada tela. O botao da
+ * tela atual fica desabilitado. Cada botao troca de tela pelo Navegador.
  *
- * O visual (botoes, textos, espacamentos) fica no BarraNavegacao.form: abra o .form no
- * IntelliJ para mexer nele de forma visual. Aqui so ficam os cliques de cada botao.
- *
- * Cada botao troca de tela pelo Navegador (a tela nova abre no mesmo lugar da atual).
- * Esta classe so monta a interface: nao tem SQL nem regra de negocio.
+ * O visual fica no BarraNavegacao.form e aqui ficam so os cliques. Sem SQL nem regra de negocio.
  */
 public class BarraNavegacao extends JPanel {
     {
@@ -41,9 +36,9 @@ public class BarraNavegacao extends JPanel {
     private JButton btnHistorico;
 
     /**
-     * @param dona    a janela onde a barra esta (ela sera trocada pela tela escolhida)
+     * @param dona    a janela onde a barra esta, que sera trocada pela tela escolhida
      * @param atual   nome da tela atual, igual ao texto do botao ("Início", "Planos"...)
-     * @param direita componente opcional no canto direito (ex.: botao "Restaurar dados"); pode ser null
+     * @param direita componente opcional no canto direito, como o botao Restaurar dados; pode ser null
      */
     public BarraNavegacao(JFrame dona, String atual, Component direita) {
         super(new BorderLayout());
@@ -59,7 +54,7 @@ public class BarraNavegacao extends JPanel {
         if (direita != null) {
             painelDireita.add(direita);
         } else {
-            painelRaiz.remove(painelDireita); // sem componente na direita, o painel nem entra na barra
+            painelRaiz.remove(painelDireita); // sem componente na direita, o painel sai da barra
         }
     }
 

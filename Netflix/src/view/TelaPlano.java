@@ -17,8 +17,8 @@ import model.Plano;
 import util.Conversor;
 
 /**
- * Tela do CRUD de Plano. Estrutura igual para todas as telas: campos + 4 metodos que chamam o Controller.
- * Os campos (rotulos, combos e seus itens) ficam no TelaPlano.form: abra-o no IntelliJ para editar.
+ * Tela do CRUD de Plano. Todas as telas seguem a mesma estrutura: campos e 4 metodos que chamam
+ * o Controller. Os campos ficam no TelaPlano.form, que se edita no IntelliJ.
  */
 public class TelaPlano extends TelaCrud {
     {
@@ -35,7 +35,7 @@ public class TelaPlano extends TelaCrud {
     private JTextField campoNome;
     private JTextField campoDescricao; // so leitura: preenchido pelo Controller
     private JTextField campoValorMensal;
-    private JComboBox<String> comboQualidade; // guardados em atributos porque a descricao automatica le estes dois
+    private JComboBox<String> comboQualidade; // a descricao automatica le estes dois
     private JComboBox<String> comboTelas;
     private JComboBox<String> comboPermiteDownload;
 
@@ -50,9 +50,8 @@ public class TelaPlano extends TelaCrud {
         adicionarCampo("Telas simultâneas", comboTelas);
         adicionarCampo("Permite download", comboPermiteDownload);
 
-        // Sempre que o usuario escolhe a qualidade ou o numero de telas (combos), a
-        // descricao e recalculada. A tela so PEDE o texto ao Controller; a regra
-        // de como a descricao e montada fica no Controller (MVC).
+        // Ao mudar a qualidade ou as telas, a descricao e recalculada. A tela so pede o texto
+        // ao Controller, que tem a regra.
         comboQualidade.addActionListener(e -> atualizarDescricao());
         comboTelas.addActionListener(e -> atualizarDescricao());
         iniciar(painelCampos);
@@ -63,7 +62,7 @@ public class TelaPlano extends TelaCrud {
                 controller.gerarDescricao((String) comboTelas.getSelectedItem(), (String) comboQualidade.getSelectedItem()));
     }
 
-    /** Preenche o DefaultTableModel: para cada Plano da lista do DAO, uma linha (Object[]) na tabela. */
+    /** Uma linha na tabela para cada plano. */
     @Override
     protected void carregarTabela() {
         for (Plano p : controller.listar()) {

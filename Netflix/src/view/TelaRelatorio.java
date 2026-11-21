@@ -26,12 +26,9 @@ import model.HistoricoVisualizacao;
 import util.Conversor;
 
 /**
- * RELATORIO da rotina principal: visualizacoes por periodo (e por perfil).
- *
- * Nao herda de TelaCrud porque nao e um cadastro: so tem filtros, uma tabela
- * (resultado do INNER JOIN) e os totais calculados pelo Controller.
- *
- * O visual fica no TelaRelatorio.form: abra-o no IntelliJ para editar.
+ * Relatorio de visualizacoes por periodo e por perfil. Nao herda de TelaCrud porque nao e um
+ * cadastro: tem filtros, uma tabela com o resultado do INNER JOIN e os totais do Controller.
+ * O visual fica no TelaRelatorio.form.
  */
 public class TelaRelatorio extends JFrame {
     {
@@ -62,18 +59,18 @@ public class TelaRelatorio extends JFrame {
         }
     };
 
-    // Ultimo resultado gerado (usado pelo botao "Salvar .txt").
+    // Ultimo resultado gerado, usado pelo Salvar .txt.
     private List<HistoricoVisualizacao> resultado = new ArrayList<>();
 
-    // Filtros que foram USADOS para gerar o 'resultado' acima. O "Salvar .txt" usa estes valores e nao o
-    // que estiver digitado nos campos agora, senao o arquivo teria linhas de um periodo e cabecalho de outro.
+    // Filtros usados para gerar o resultado acima. O Salvar .txt usa estes, e nao o que esta nos
+    // campos agora, senao o arquivo misturaria linhas de um periodo com o cabecalho de outro.
     private String filtroDataInicial = "";
     private String filtroDataFinal = "";
     private String filtroPerfil = RelatorioController.TODOS;
 
     public TelaRelatorio() {
         super("Relatório - Visualizações por período");
-        setContentPane(painelRaiz); // o layout montado no TelaRelatorio.form
+        setContentPane(painelRaiz); // layout do TelaRelatorio.form
 
         campoDataFinal.setText(Conversor.hoje());
         labelResumo.setBorder(BorderFactory.createEmptyBorder(8, 10, 8, 10));
@@ -82,7 +79,7 @@ public class TelaRelatorio extends JFrame {
         btnGerar.addActionListener(e -> gerar());
         btnSalvar.addActionListener(e -> salvar());
 
-        // Topo: a barra de navegacao (igual em todas as telas) fica acima dos filtros.
+        // Barra de navegacao no topo, igual nas outras telas.
         painelBarra.add(new BarraNavegacao(this, "Relatório", null), BorderLayout.CENTER);
 
         setSize(950, 500);
@@ -93,13 +90,13 @@ public class TelaRelatorio extends JFrame {
             for (String opcao : controller.opcoesPerfis()) {
                 comboPerfil.addItem(opcao);
             }
-            gerar(); // ja abre mostrando o relatorio do periodo padrao
+            gerar(); // abre ja com o relatorio do periodo padrao
         } catch (RuntimeException e) {
             JOptionPane.showMessageDialog(this, e.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
         }
     }
 
-    /** Pede o relatorio ao Controller e mostra as linhas e os totais. */
+    /** Pede o relatorio ao Controller e mostra linhas e totais. */
     private void gerar() {
         try {
             resultado = controller.gerar(campoDataInicial.getText(), campoDataFinal.getText(),
@@ -121,7 +118,7 @@ public class TelaRelatorio extends JFrame {
         labelResumo.setText(controller.resumo(resultado));
     }
 
-    /** Abre a janela "Salvar como" e pede ao Controller para gravar o .txt. */
+    /** Abre o "Salvar como" e pede ao Controller para gravar o .txt. */
     private void salvar() {
         JFileChooser escolher = new JFileChooser();
         escolher.setSelectedFile(new File("relatorio_visualizacoes.txt"));

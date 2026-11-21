@@ -16,11 +16,8 @@ import model.Perfil;
 import util.Conversor;
 
 /**
- * CONTROLLER do RELATORIO da rotina principal:
- * "Visualizacoes por periodo (e, se quiser, por perfil)".
- *
- * Ele trabalha com o CRUD principal (historico_visualizacao) usando a consulta
- * com INNER JOIN do DAO, e calcula os totais (regra de negocio fica aqui, nao na tela).
+ * Controller do relatorio de visualizacoes por periodo, com filtro opcional por perfil.
+ * Usa o INNER JOIN do DAO e calcula os totais.
  */
 public class RelatorioController {
 
@@ -29,7 +26,7 @@ public class RelatorioController {
     private final HistoricoVisualizacaoDAO dao = new HistoricoVisualizacaoDAO();
     private final PerfilDAO perfilDAO = new PerfilDAO();
 
-    /** Opcoes do filtro de perfil: "Todos" + "id - nome" de cada perfil. */
+    /** Itens do filtro de perfil: "Todos" e "id - nome" de cada perfil. */
     public List<String> opcoesPerfis() {
         try {
             List<String> opcoes = new ArrayList<>();
@@ -44,14 +41,13 @@ public class RelatorioController {
     }
 
     /**
-     * Valida o filtro e busca as visualizacoes do periodo.
-     * Erros de validacao saem como IllegalArgumentException e erros de banco como
-     * RuntimeException; a tela captura as duas e mostra a mensagem.
+     * Valida o filtro e busca as visualizacoes do periodo. A validacao lanca
+     * IllegalArgumentException e o banco lanca RuntimeException; a tela captura as duas.
      */
     public List<HistoricoVisualizacao> gerar(String dataInicial, String dataFinal, String perfil) {
         LocalDate inicio = Conversor.paraData(dataInicial, "Data inicial");
         LocalDate fim = Conversor.paraData(dataFinal, "Data final");
-        if (fim.isBefore(inicio)) { // regra: periodo invalido
+        if (fim.isBefore(inicio)) { // periodo invalido
             throw new IllegalArgumentException("A data final não pode ser anterior à data inicial.");
         }
         int idPerfil = TODOS.equals(perfil) ? 0 : Conversor.extrairId(perfil, "Perfil"); // 0 = todos
@@ -63,7 +59,7 @@ public class RelatorioController {
         }
     }
 
-    /** Totais do relatorio, mostrados abaixo da tabela. */
+    /** Totais mostrados abaixo da tabela. */
     public String resumo(List<HistoricoVisualizacao> lista) {
         int concluidas = 0;
         int minutos = 0;
@@ -79,7 +75,7 @@ public class RelatorioController {
                 + "   |   Minutos assistidos: " + minutos;
     }
 
-    /** Gera o relatorio em um arquivo .txt e devolve a mensagem para a tela. */
+    /** Grava o relatorio em .txt e devolve a mensagem para a tela. */
     public String salvarTxt(String caminho, List<HistoricoVisualizacao> lista,
                             String dataInicial, String dataFinal, String perfil) {
         StringBuilder texto = new StringBuilder();

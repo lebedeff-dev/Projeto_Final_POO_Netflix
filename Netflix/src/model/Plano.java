@@ -3,27 +3,24 @@ package model;
 import java.math.BigDecimal;
 
 /**
- * Entidade Plano (tabela "plano").
- * Model = classe "burra": so guarda dados (atributos + getters/setters).
- * Nao acessa banco e nao tem regra de negocio.
- * Mapeamento: camelCase no Java <-> snake_case no banco (feito no DAO).
- *   idPlano -> id_plano | valorMensal -> valor_mensal | ...
+ * Plano de assinatura (tabela plano). So guarda dados, sem acesso a banco nem regra de negocio.
+ * O DAO faz a conversao de camelCase para snake_case (valorMensal vira valor_mensal).
  */
 public class Plano {
 
     private int idPlano;
     private String nome;
     private String descricao;
-    private BigDecimal valorMensal;   // DECIMAL: BigDecimal evita erro de arredondamento de double com dinheiro
+    private BigDecimal valorMensal;   // DECIMAL; double erra o arredondamento de dinheiro
     private String qualidadeMaxima;   // ENUM('SD','HD','Full HD','4K UHD')
     private int telasSimultaneas;
     private boolean permiteDownload;  // TINYINT(1) = boolean
 
-    // Construtor vazio: usado pelo DAO ao montar o objeto a partir do ResultSet.
+    // Vazio: o DAO usa ao ler do ResultSet.
     public Plano() {
     }
 
-    // Construtor completo (sem id: o id e gerado pelo AUTO_INCREMENT do banco).
+    // Completo, sem id (o banco gera com AUTO_INCREMENT).
     public Plano(String nome, String descricao, BigDecimal valorMensal, String qualidadeMaxima,
                  int telasSimultaneas, boolean permiteDownload) {
         this.nome = nome;

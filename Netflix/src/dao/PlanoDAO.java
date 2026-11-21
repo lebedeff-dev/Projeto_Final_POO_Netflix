@@ -11,36 +11,18 @@ import model.Plano;
 import util.ConnectionFactory;
 
 /**
- * DAO (Data Access Object) de Plano: unica classe que "fala SQL" com a tabela plano.
- * O Controller chama estes metodos passando/recebendo objetos Plano e nunca ve SQL;
- * a View nunca ve o DAO. Esse e o motivo do MVC: cada camada com uma responsabilidade.
+ * DAO de Plano: o unico lugar com SQL da tabela plano. O Controller passa e recebe objetos Plano.
  *
- * ===== CONCEITOS (valem para TODOS os DAOs) =====
- *
- * 1) PreparedStatement e SQL Injection
- *    No SQL escrevemos "?" no lugar dos valores e depois enviamos os valores com
- *    ps.setString(1, ...), ps.setInt(2, ...). O banco recebe o comando e os dados
- *    SEPARADOS: o dado e sempre tratado como valor, nunca como codigo SQL.
- *    Se concatenassemos ("... WHERE nome = '" + nome + "'") e o usuario digitasse
- *    x' OR '1'='1, ele alteraria o comando (SQL Injection). Com "?" isso nao acontece.
- *    Alem disso o comando e compilado uma vez pelo banco (mais eficiente).
- *
- * 2) try-with-resources
- *    try (Connection con = ...; PreparedStatement ps = ...) { ... }
- *    Tudo que e declarado entre parenteses e fechado AUTOMATICAMENTE ao sair do
- *    bloco, mesmo se der excecao. Sem isso, esqueceriamos de fechar a conexao e o
- *    MySQL acabaria sem conexoes disponiveis ("vazamento de conexao").
- *
- * 3) Mapeamento camelCase (Java) <-> snake_case (banco)
- *    Feito aqui: plano.getValorMensal() -> coluna valor_mensal, e vice-versa.
- *
- * 4) SQLException
- *    Os metodos declaram "throws SQLException" e deixam o Controller decidir como
- *    avisar o usuario. O DAO so acessa dados; nao mostra janelas.
+ * Os outros DAOs seguem o mesmo molde, entao estas notas valem para todos:
+ * - PreparedStatement: o SQL usa "?" e os valores vao separados (ps.setString, ps.setInt).
+ *   O que o usuario digita nunca vira comando, o que evita SQL injection.
+ * - try-with-resources: fecha Connection, PreparedStatement e ResultSet ao sair do bloco,
+ *   mesmo se der erro. Sem isso a conexao ficaria aberta.
+ * - Os metodos lancam SQLException, e o Controller escolhe a mensagem. O DAO nao mostra janelas.
  */
 public class PlanoDAO {
 
-    /** INSERT. O id nao entra: o banco gera (AUTO_INCREMENT). */
+    /** O id nao entra: o banco gera (AUTO_INCREMENT). */
     public void inserir(Plano p) throws SQLException {
         String sql = "INSERT INTO plano (nome, descricao, valor_mensal, qualidade_maxima, "
                    + "telas_simultaneas, permite_download, data_criacao) VALUES (?, ?, ?, ?, ?, ?, CURDATE())";
@@ -55,11 +37,11 @@ public class PlanoDAO {
             ps.setInt(5, p.getTelasSimultaneas());
             ps.setBoolean(6, p.isPermiteDownload());
 
-            ps.executeUpdate(); // executeUpdate: INSERT/UPDATE/DELETE (nao retorna tabela)
+            ps.executeUpdate(); // INSERT, UPDATE e DELETE usam executeUpdate
         }
     }
 
-    /** SELECT * : devolve todos os planos como lista de objetos Plano. */
+    /** Devolve todos os planos. */
     public List<Plano> listar() throws SQLException {
         String sql = "SELECT id_plano, nome, descricao, valor_mensal, qualidade_maxima, "
                    + "telas_simultaneas, permite_download FROM plano ORDER BY id_plano";
@@ -67,9 +49,9 @@ public class PlanoDAO {
 
         try (Connection con = ConnectionFactory.getConnection();
              PreparedStatement ps = con.prepareStatement(sql);
-             ResultSet rs = ps.executeQuery()) { // executeQuery: SELECT -> ResultSet (tabela em memoria)
+             ResultSet rs = ps.executeQuery()) { // SELECT usa executeQuery e devolve um ResultSet
 
-            // rs.next() avanca uma linha por vez; retorna false quando acabam.
+            // rs.next() avanca uma linha e devolve false no fim.
             while (rs.next()) {
                 lista.add(montarPlano(rs));
             }
@@ -77,7 +59,7 @@ public class PlanoDAO {
         return lista;
     }
 
-    /** UPDATE: altera todos os campos do plano identificado pelo id (clausula WHERE). */
+    /** Altera o plano do id informado. */
     public boolean atualizar(Plano p) throws SQLException {
         String sql = "UPDATE plano SET nome = ?, descricao = ?, valor_mensal = ?, qualidade_maxima = ?, "
                    + "telas_simultaneas = ?, permite_download = ? WHERE id_plano = ?";
@@ -91,16 +73,13 @@ public class PlanoDAO {
             ps.setString(4, p.getQualidadeMaxima());
             ps.setInt(5, p.getTelasSimultaneas());
             ps.setBoolean(6, p.isPermiteDownload());
-            ps.setInt(7, p.getIdPlano()); // sem o WHERE, TODOS os planos seriam alterados!
+            ps.setInt(7, p.getIdPlano()); // sem o WHERE, todos os planos seriam alterados
 
             return ps.executeUpdate() > 0; // false = nenhuma linha com esse id
         }
     }
 
-    /**
-     * DELETE pelo id. Se o plano tiver contas ligadas, o MySQL recusa (FK) e lanca
-     * SQLException; o Controller mostra a mensagem amigavel.
-     */
+    /** Se o plano tiver contas, o MySQL recusa por causa da FK e o Controller mostra a mensagem. */
     public boolean eliminar(int idPlano) throws SQLException {
         String sql = "DELETE FROM plano WHERE id_plano = ?";
 
@@ -111,10 +90,7 @@ public class PlanoDAO {
         }
     }
 
-    /**
-     * Converte a linha ATUAL do ResultSet em um objeto Plano
-     * (snake_case do banco -> camelCase do Java). Evita repetir codigo.
-     */
+    /** Converte a linha atual do ResultSet em Plano (snake_case do banco para camelCase do Java). */
     private Plano montarPlano(ResultSet rs) throws SQLException {
         Plano p = new Plano();
         p.setIdPlano(rs.getInt("id_plano"));

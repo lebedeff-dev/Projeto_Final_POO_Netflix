@@ -6,7 +6,7 @@
 | **2** | Perfil e Título | Visão geral do banco e `CriadorBanco` |
 | **3** | Histórico e Relatório | O INNER JOIN de 5 tabelas e o `ON DELETE CASCADE` |
 
-- Os números de linha valem para o commit `cd7faee` e os arquivos citados estão em `Netflix/src/`, exceto o script do banco (`Netflix/sql/netflix.sql`).
+- Os números de linha valem para o código depois da revisão dos comentários e os arquivos citados estão em `Netflix/src/`, exceto o script do banco (`Netflix/sql/netflix.sql`).
 - Se alguém editar o código, as linhas mudam: confira antes de apresentar.
 - O guia anterior (`ROTEIRO-ESTUDO.md`) usa outra divisão e fica como material de apoio.
 
@@ -36,12 +36,12 @@
 ### O fluxo de qualquer CRUD
 
 ```
-Botão (TelaCrud.java:176-179)
+Botão (TelaCrud.java:166-169)
   -> inserir()/atualizar()/eliminar() da tela filha        (ex.: TelaConta.java:70-85)
-  -> Controller valida e monta o Model                     (ex.: ContaController.java:40-113)
-  -> DAO executa o SQL com PreparedStatement               (ex.: ContaDAO.java:21-94)
+  -> Controller valida e monta o Model                     (ex.: ContaController.java:40-110)
+  -> DAO executa o SQL com PreparedStatement               (ex.: ContaDAO.java:19-91)
   -> MySQL
-  <- volta uma mensagem de texto até mostrarResultado()    (TelaCrud.java:233-237)
+  <- volta uma mensagem de texto até mostrarResultado()    (TelaCrud.java:222-226)
 ```
 
 ### O banco de dados (`sql/netflix.sql`)
@@ -75,8 +75,8 @@ Perguntas que valem para todos:
 - **MVC:** a View só captura e mostra, o Controller valida e aplica as regras, o DAO fala SQL e o Model guarda os dados.
 - **Encapsulamento:** atributos privados nos models, acessados por getters e setters.
 - **Herança, classe abstrata e polimorfismo:** as 5 telas de cadastro herdam de `TelaCrud` (detalhes na Pessoa 1).
-- **`PreparedStatement`:** SQL com `?` e valores enviados separados. Evita SQL injection (explicação em `PlanoDAO.java:20-26`).
-- **`try-with-resources`:** fecha a conexão sozinho, mesmo com erro (`PlanoDAO.java:28-32`).
+- **`PreparedStatement`:** SQL com `?` e valores enviados separados. Evita SQL injection (explicação em `PlanoDAO.java:17-18`).
+- **`try-with-resources`:** fecha a conexão sozinho, mesmo com erro (`PlanoDAO.java:19-20`).
 
 ---
 
@@ -104,21 +104,21 @@ Ajuste as frases ao que você de fato fez.
 
 | Onde | O que faz |
 |---|---|
-| `PlanoController.java:29-37` | `listar`. Erro de banco sobe como `RuntimeException` e a `TelaCrud` mostra a mensagem. |
-| `PlanoController.java:39-49` | `inserir`. `IllegalArgumentException` é erro de validação e `SQLException` é erro do banco. |
-| `PlanoController.java:51-66` | `atualizar`. Se o DAO devolver `false`, o id não existe mais e a mensagem avisa. |
-| `PlanoController.java:68-84` | `eliminar`. O erro 1451 (linha 78) significa que há contas usando o plano. |
-| `PlanoController.java:94-107` | `gerarDescricao`. Transforma telas e qualidade em texto: `("2", "Full HD")` vira "Duas telas, qualidade Full HD". Devolve `""` se o número for inválido. |
-| `PlanoController.java:110-127` | `montar`. Linha 113: valor maior que zero (`signum() <= 0`). Linha 117: pelo menos 1 tela. Linha 122: a descrição é gerada, não digitada. |
-| `PlanoDAO.java:44-60` | `inserir`. O id não entra (`AUTO_INCREMENT`) e `CURDATE()` grava a data de criação (linha 46). |
-| `PlanoDAO.java:63-78` | `listar`. `executeQuery` devolve o `ResultSet`, e `rs.next()` avança uma linha por vez. |
-| `PlanoDAO.java:81-98` | `atualizar`. O `WHERE id_plano = ?` (linha 94) é essencial: sem ele, todos os planos seriam alterados. |
-| `PlanoDAO.java:104-112` | `eliminar`. Se houver contas ligadas, o MySQL recusa e lança `SQLException`. |
-| `PlanoDAO.java:118-128` | `montarPlano`. Converte `snake_case` do banco em `camelCase` do Java, sem repetir código. |
-| `TelaPlano.java:42-59` | Construtor. `super(...)` informa o título e as colunas, `adicionarCampo` registra os campos e `iniciar` monta a tela. |
-| `TelaPlano.java:56-57, 61-64` | Os combos de qualidade e telas recalculam a descrição ao vivo. A tela só pede o texto ao Controller. |
-| `TelaPlano.java:67-73` | `carregarTabela`: uma linha na tabela para cada plano. |
-| `TelaPlano.java:75-90` | `inserir`, `atualizar` e `eliminar`: leem os campos com `valor("...")` e chamam o Controller. |
+| `PlanoController.java:21-29` | `listar`. Erro de banco sobe como `RuntimeException` e a `TelaCrud` mostra a mensagem. |
+| `PlanoController.java:31-41` | `inserir`. `IllegalArgumentException` é erro de validação e `SQLException` é erro do banco. |
+| `PlanoController.java:43-58` | `atualizar`. Se o DAO devolver `false`, o id não existe mais e a mensagem avisa. |
+| `PlanoController.java:60-76` | `eliminar`. O erro 1451 (linha 70) significa que há contas usando o plano. |
+| `PlanoController.java:84-97` | `gerarDescricao`. Transforma telas e qualidade em texto: `("2", "Full HD")` vira "Duas telas, qualidade Full HD". Devolve `""` se o número for inválido. |
+| `PlanoController.java:100-117` | `montar`. Linha 103: valor maior que zero (`signum() <= 0`). Linha 107: pelo menos 1 tela. Linha 112: a descrição é gerada, não digitada. |
+| `PlanoDAO.java:26-42` | `inserir`. O id não entra (`AUTO_INCREMENT`) e `CURDATE()` grava a data de criação (linha 28). |
+| `PlanoDAO.java:45-60` | `listar`. `executeQuery` devolve o `ResultSet`, e `rs.next()` avança uma linha por vez. |
+| `PlanoDAO.java:63-80` | `atualizar`. O `WHERE id_plano = ?` (linha 76) é essencial: sem ele, todos os planos seriam alterados. |
+| `PlanoDAO.java:83-91` | `eliminar`. Se houver contas ligadas, o MySQL recusa e lança `SQLException`. |
+| `PlanoDAO.java:94-104` | `montarPlano`. Converte `snake_case` do banco em `camelCase` do Java, sem repetir código. |
+| `TelaPlano.java:42-58` | Construtor. `super(...)` informa o título e as colunas, `adicionarCampo` registra os campos e `iniciar` monta a tela. |
+| `TelaPlano.java:55-56, 61-64` | Os combos de qualidade e telas recalculam a descrição ao vivo. A tela só pede o texto ao Controller. |
+| `TelaPlano.java:66-72` | `carregarTabela`: uma linha na tabela para cada plano. |
+| `TelaPlano.java:74-89` | `inserir`, `atualizar` e `eliminar`: leem os campos com `valor("...")` e chamam o Controller. |
 
 **Conta**
 
@@ -127,12 +127,12 @@ Ajuste as frases ao que você de fato fez.
 | `ContaController.java:28-38` | `opcoesPlanos`. Alimenta o combo no formato "id - nome". |
 | `ContaController.java:40-67` | `inserir` e `atualizar`. |
 | `ContaController.java:69-84` | `eliminar`. O erro 1451 (linha 79) significa que a conta ainda tem perfis. |
-| `ContaController.java:90-98` | `mensagemDeErro`. `1062` é e-mail repetido (coluna `UNIQUE`) e `1452` é plano inexistente. |
-| `ContaController.java:100-113` | `montar`. Linhas 102-105: país com exatamente 2 letras (`CHAR(2)`). Linhas 106-112: converte o plano em id, exige e-mail e senha, troca telefone vazio por `null` e deixa o país em maiúsculas. O comentário da linha 109 avisa que em um sistema real aqui se geraria o hash. |
-| `ContaDAO.java:21-36` | `inserir`. `NOW()` grava a data de cadastro (linha 23). `setString` aceita `null` e grava `NULL` (linha 31). |
-| `ContaDAO.java:38-65` | `listar` com `INNER JOIN plano` (linhas 41-44). A coluna `nome_plano` vem do JOIN (linha 60). |
-| `ContaDAO.java:67-83` | `atualizar`, com `WHERE id_conta = ?`. |
-| `ContaDAO.java:85-94` | `eliminar`. O comentário da linha 85 explica que falha se a conta tiver perfis. |
+| `ContaController.java:87-95` | `mensagemDeErro`. `1062` é e-mail repetido (coluna `UNIQUE`) e `1452` é plano inexistente. |
+| `ContaController.java:97-110` | `montar`. Linhas 99-102: país com exatamente 2 letras (`CHAR(2)`). Linhas 103-109: converte o plano em id, exige e-mail e senha, troca telefone vazio por `null` e deixa o país em maiúsculas. O comentário da linha 106 avisa que em um sistema real aqui se geraria o hash. |
+| `ContaDAO.java:19-34` | `inserir`. `NOW()` grava a data de cadastro (linha 21). `setString` aceita `null` e grava `NULL` (linha 29). |
+| `ContaDAO.java:36-62` | `listar` com `INNER JOIN plano` (linhas 38-41). A coluna `nome_plano` vem do JOIN (linha 57). |
+| `ContaDAO.java:64-80` | `atualizar`, com `WHERE id_conta = ?`. |
+| `ContaDAO.java:82-91` | `eliminar`. O comentário da linha 82 explica que falha se a conta tiver perfis. |
 | `TelaConta.java:55-58` | `carregarCombos`. Preenche o combo de planos a partir do Controller. |
 | `TelaConta.java:60-68` | `carregarTabela`. A coluna Plano mostra "3 - Premium" (id e nome do JOIN). |
 | `TelaConta.java:87-90` | `definirPadroes`. O país começa como `BR`. |
@@ -155,27 +155,27 @@ Ajuste as frases ao que você de fato fez.
 
 | Onde | O que faz |
 |---|---|
-| `TelaCrud.java:22-38` | O comentário da classe explica o Template Method: a base monta o layout e liga os botões, e cada filha informa os campos. |
-| `TelaCrud.java:39` | `public abstract class TelaCrud extends JFrame`: herança e classe abstrata. |
-| `TelaCrud.java:72-86` | Construtor. Cria o `DefaultTableModel` (a "planilha em memória") e o torna só de leitura com `isCellEditable` (linhas 78-83). |
-| `TelaCrud.java:91-100` | Os 4 métodos `abstract` (`carregarTabela`, `inserir`, `atualizar`, `eliminar`). Cada tela filha é obrigada a implementá-los. |
-| `TelaCrud.java:103-112` | Ganchos opcionais: `acrescentarBotoes`, `carregarCombos` e `definirPadroes`. A filha só sobrescreve se precisar. |
-| `TelaCrud.java:120-140` | `adicionarCampo`, `preencherCombo` e `valor`. A View entrega tudo como `String` ao Controller. |
-| `TelaCrud.java:165-198` | `iniciar`. Liga os botões e a seleção da tabela e termina com `recarregar(true)`. |
-| `TelaCrud.java:176-179` | Os botões só chamam métodos. A lambda `e -> ...` é a forma curta de um `ActionListener`. |
-| `TelaCrud.java:182-186` e `206-213` | Clicar numa linha copia os valores para o formulário (`aoSelecionar`). |
-| `TelaCrud.java:216-226` | `confirmarEliminar`. Pede confirmação com `JOptionPane` antes de apagar. |
-| `TelaCrud.java:233-237` | `mostrarResultado`. O formulário só é limpo se a mensagem contiver "sucesso". Em caso de erro, o usuário mantém o que digitou. |
-| `TelaCrud.java:247-286` | `recarregar`. Busca tudo de novo e, depois de um erro, restaura os combos e a linha selecionada. |
+| `TelaCrud.java:22-36` | O comentário da classe explica o Template Method: a base monta o layout e liga os botões, e cada filha informa os campos. |
+| `TelaCrud.java:37` | `public abstract class TelaCrud extends JFrame`: herança e classe abstrata. |
+| `TelaCrud.java:69-82` | Construtor. Cria o `DefaultTableModel` (a "planilha em memória") e o torna só de leitura com `isCellEditable` (linhas 74-79). |
+| `TelaCrud.java:87-96` | Os 4 métodos `abstract` (`carregarTabela`, `inserir`, `atualizar`, `eliminar`). Cada tela filha é obrigada a implementá-los. |
+| `TelaCrud.java:99-108` | Ganchos opcionais: `acrescentarBotoes`, `carregarCombos` e `definirPadroes`. A filha só sobrescreve se precisar. |
+| `TelaCrud.java:116-136` | `adicionarCampo`, `preencherCombo` e `valor`. A View entrega tudo como `String` ao Controller. |
+| `TelaCrud.java:160-188` | `iniciar`. Liga os botões e a seleção da tabela e termina com `recarregar(true)`. |
+| `TelaCrud.java:166-169` | Os botões só chamam métodos. A lambda `e -> ...` é a forma curta de um `ActionListener`. |
+| `TelaCrud.java:172-176` e `196-203` | Clicar numa linha copia os valores para o formulário (`aoSelecionar`). |
+| `TelaCrud.java:206-216` | `confirmarEliminar`. Pede confirmação com `JOptionPane` antes de apagar. |
+| `TelaCrud.java:222-226` | `mostrarResultado`. O formulário só é limpo se a mensagem contiver "sucesso". Em caso de erro, o usuário mantém o que digitou. |
+| `TelaCrud.java:236-275` | `recarregar`. Busca tudo de novo e, depois de um erro, restaura os combos e a linha selecionada. |
 
 **Polimorfismo:** o botão chama `inserir()` sem saber qual tela está aberta, e o Java executa o método da filha (por exemplo `TelaPerfil.java:67-70`).
 
 **`util/Conversor`** (a View entrega tudo como `String`; o `Conversor` converte e valida)
-- `obrigatorio` (32-37) e `vazioParaNulo` (40-42): campo obrigatório e campo opcional.
-- `paraInt` (44-50), `paraIntOuNulo` (53-55) e `paraDecimal` (57-63): trocam a exceção do Java por uma mensagem clara.
-- `paraData` (65-71): formato `dd/MM/uuuu` com `STRICT` (linhas 19-20), que recusa datas inexistentes como 31/02.
-- `opcao` (87-89) e `extrairId` (95-100): montam e desmontam o texto "3 - Premium" dos combos.
-- `paraId` (103-108): "Selecione um registro na tabela primeiro."
+- `obrigatorio` (30-35) e `vazioParaNulo` (38-40): campo obrigatório e campo opcional.
+- `paraInt` (42-48), `paraIntOuNulo` (51-53) e `paraDecimal` (55-61): trocam a exceção do Java por uma mensagem clara.
+- `paraData` (63-69): formato `dd/MM/uuuu` com `STRICT` (linhas 17-18), que recusa datas inexistentes como 31/02.
+- `opcao` (84-86) e `extrairId` (89-94): montam e desmontam o texto "3 - Premium" dos combos.
+- `paraId` (97-102): "Selecione um registro na tabela primeiro."
 
 ### Perguntas por quê
 
@@ -221,10 +221,10 @@ Ajuste as frases ao que você de fato fez.
 | `PerfilController.java:40-65` | `inserir` e `atualizar`. |
 | `PerfilController.java:67-78` | `eliminar`. A mensagem avisa que o histórico do perfil também foi apagado (linha 72). |
 | `PerfilController.java:80-91` | `montar`. Linha 82: a regex `\\d{4}` aceita só 4 dígitos. O PIN é opcional, e vazio vira `null` (linha 81). |
-| `PerfilDAO.java:18-32` | `inserir`. `CURDATE()` grava a data de criação (linha 20). O PIN aceita `null` (linha 29). |
-| `PerfilDAO.java:34-59` | `listar` com `INNER JOIN conta` (linhas 36-39). A coluna `email_conta` vem do JOIN (linha 54). |
-| `PerfilDAO.java:61-76` | `atualizar`, com `WHERE id_perfil = ?`. |
-| `PerfilDAO.java:78-87` | `eliminar`. O comentário da linha 78 explica o `ON DELETE CASCADE` no histórico. |
+| `PerfilDAO.java:16-30` | `inserir`. `CURDATE()` grava a data de criação (linha 18). O PIN aceita `null` (linha 27). |
+| `PerfilDAO.java:32-57` | `listar` com `INNER JOIN conta` (linhas 34-37). A coluna `email_conta` vem do JOIN (linha 52). |
+| `PerfilDAO.java:59-74` | `atualizar`, com `WHERE id_perfil = ?`. |
+| `PerfilDAO.java:76-85` | `eliminar`. O comentário da linha 76 explica o `ON DELETE CASCADE` no histórico. |
 | `TelaPerfil.java:41-50` | Construtor. Registra os campos na mesma ordem das colunas da tabela. |
 | `TelaPerfil.java:52-55` | `carregarCombos`. Preenche o combo de contas. |
 | `TelaPerfil.java:57-65` | `carregarTabela`. A coluna Conta mostra "1 - ana.silva@email.com" (id e e-mail do JOIN). |
@@ -237,13 +237,13 @@ Ajuste as frases ao que você de fato fez.
 | `TituloController.java:23-50` | `inserir` e `atualizar`. |
 | `TituloController.java:52-63` | `eliminar`. A mensagem avisa que o histórico do título também foi apagado (linha 57). |
 | `TituloController.java:65-76` | `montar`. Linha 73: `paraIntOuNulo` transforma a duração vazia em `null` (séries). |
-| `TituloDAO.java:20-31` | `inserir`. Usa `preencher` para não repetir os `ps.set...`. |
-| `TituloDAO.java:33-48` | `listar`. |
-| `TituloDAO.java:50-64` | `buscarPorId`. Devolve `null` se não existir. O `HistoricoController` o usa para validar o minuto de parada. |
-| `TituloDAO.java:66-84` | `montar`. Linhas 76-79: `getInt` devolve 0 para `NULL`, então `wasNull()` descobre se era `NULL` de verdade. |
-| `TituloDAO.java:86-98` | `atualizar`. O `WHERE` é o décimo `?` (linha 95). |
-| `TituloDAO.java:100-109` | `eliminar`. O comentário da linha 100 explica o `ON DELETE CASCADE`. |
-| `TituloDAO.java:111-129` | `preencher`. Linhas 119-125: `Integer` nulo não pode ir em `setInt` (daria `NullPointerException`), então usa `setNull(6, Types.INTEGER)`. |
+| `TituloDAO.java:17-28` | `inserir`. Usa `preencher` para não repetir os `ps.set...`. |
+| `TituloDAO.java:30-45` | `listar`. |
+| `TituloDAO.java:47-61` | `buscarPorId`. Devolve `null` se não existir. O `HistoricoController` o usa para validar o minuto de parada. |
+| `TituloDAO.java:63-80` | `montar`. Linhas 73-75: `getInt` devolve 0 para `NULL`, então `wasNull()` descobre se era `NULL` de verdade. |
+| `TituloDAO.java:82-94` | `atualizar`. O `WHERE` é o décimo `?` (linha 91). |
+| `TituloDAO.java:96-105` | `eliminar`. O comentário da linha 96 explica o `ON DELETE CASCADE`. |
+| `TituloDAO.java:107-124` | `preencher`. Linhas 115-120: `Integer` nulo não pode ir em `setInt` (daria `NullPointerException`), então usa `setNull(6, Types.INTEGER)`. |
 | `TelaTitulo.java:44-57` | Construtor. |
 | `TelaTitulo.java:59-66` | `carregarTabela`. |
 
@@ -272,9 +272,9 @@ Ajuste as frases ao que você de fato fez.
 - **Teste rápido do JOIN:** linhas 128-132, em comentário, com 3 tabelas.
 
 **`util/CriadorBanco`**
-- `criarSeNaoExistir` (30-34): cria o banco se ele não existe ou está sem tabelas. Um banco que já tem tabelas nunca é apagado aqui.
-- `bancoSemTabelas` (37-45) e `bancoExiste` (48-56): consultam o `information_schema`.
-- `recriarBanco` (63-77): o JDBC executa um comando por vez, então o script é cortado em cada `;` (linha 71) e executado em sequência. Usa `Statement` (não `PreparedStatement`) porque o script não tem valores digitados pelo usuário.
+- `criarSeNaoExistir` (26-30): cria o banco se ele não existe ou está sem tabelas. Um banco que já tem tabelas nunca é apagado aqui.
+- `bancoSemTabelas` (33-41) e `bancoExiste` (44-52): consultam o `information_schema`.
+- `recriarBanco` (55-68): o JDBC executa um comando por vez, então o script é cortado em cada `;` (linha 62) e executado em sequência. Usa `Statement` (não `PreparedStatement`) porque o script não tem valores digitados pelo usuário.
 - `lerScript` (80-96): lê o `netflix.sql` de dentro do `.jar` e remove os comentários `--`.
 
 ### Perguntas por quê
@@ -316,36 +316,36 @@ Ajuste as frases ao que você de fato fez.
 
 | Onde | O que faz |
 |---|---|
-| `HistoricoVisualizacaoDAO.java:21-47` | `SELECT_COM_NOMES`: o **INNER JOIN de 5 tabelas**. O comentário explica o `ON`, os apelidos e o porquê dos `AS`. |
-| `HistoricoVisualizacaoDAO.java:50-66` | `inserir`. `NOW()` grava as duas datas (linha 53). `nomePerfil` e `nomeTitulo` não são gravados porque não existem na tabela (linha 63). |
-| `HistoricoVisualizacaoDAO.java:69-82` | `listarComNomes`: o SELECT com JOIN, ordenado da visualização mais recente para a mais antiga. |
-| `HistoricoVisualizacaoDAO.java:119-135` | `atualizar`. Só a data da última visualização muda (`NOW()`). O `WHERE` (linha 122) é essencial. |
-| `HistoricoVisualizacaoDAO.java:137-145` | `eliminar`. |
-| `HistoricoVisualizacaoDAO.java:152-169` | `montar`. Linhas 157-158: `getTimestamp(...).toLocalDateTime()`. Linhas 163-167: as colunas do JOIN são lidas pelo apelido do SELECT. |
-| `HistoricoController.java:35-38` | `duracaoDoTitulo`. Usa `TituloDAO.buscarPorId` e devolve `null` para série ou título inexistente. |
-| `HistoricoController.java:41-63` | `opcoesPerfis` e `opcoesTitulos`. Alimentam os combos. |
-| `HistoricoController.java:65-103` | `inserir`, `atualizar` e `eliminar`. |
-| `HistoricoController.java:105-137` | `montar`, com as regras de negócio. Linha 111: o minuto não pode ser negativo. Linhas 116-120: não pode passar da duração do título. Linhas 122-125: só marca como concluído quem parou no último minuto. Linhas 126-129: quem chegou ao fim precisa estar como concluído. Tudo isso só vale se a duração não for `null` (séries ficam de fora). |
-| `TelaHistorico.java:48-58` | Construtor. As colunas Início, Última visualização, Conta e Plano são só de exibição e ficam no fim da tabela. |
-| `TelaHistorico.java:60-64` | `carregarCombos`. Preenche os combos de perfil e título. |
-| `TelaHistorico.java:71-82` | `carregarTabela`. Cada objeto da lista do JOIN vira uma linha, com "1 - Ana" e "1 - Stranger Things". |
-| `TelaHistorico.java:99-105` | `acrescentarBotoes`. Cria o botão **Relatório** (linha 102), que abre a `TelaRelatorio` pelo `Navegador` (linha 103). |
-| `TelaHistorico.java:107-110` | `definirPadroes`. O minuto de parada começa em `0`. |
+| `HistoricoVisualizacaoDAO.java:21-37` | `SELECT_COM_NOMES`: o **INNER JOIN de 5 tabelas**. O comentário explica o `ON`, os apelidos e o porquê dos `AS`. |
+| `HistoricoVisualizacaoDAO.java:40-56` | `inserir`. `NOW()` grava as duas datas (linha 43). `nomePerfil` e `nomeTitulo` não são gravados porque não existem na tabela (linha 53). |
+| `HistoricoVisualizacaoDAO.java:59-72` | `listarComNomes`: o SELECT com JOIN, ordenado da visualização mais recente para a mais antiga. |
+| `HistoricoVisualizacaoDAO.java:107-123` | `atualizar`. Só a data da última visualização muda (`NOW()`). O `WHERE` (linha 110) é essencial. |
+| `HistoricoVisualizacaoDAO.java:125-133` | `eliminar`. |
+| `HistoricoVisualizacaoDAO.java:136-153` | `montar`. Linhas 141-142: `getTimestamp(...).toLocalDateTime()`. Linhas 147-151: as colunas do JOIN são lidas pelo apelido do SELECT. |
+| `HistoricoController.java:32-35` | `duracaoDoTitulo`. Usa `TituloDAO.buscarPorId` e devolve `null` para série ou título inexistente. |
+| `HistoricoController.java:38-60` | `opcoesPerfis` e `opcoesTitulos`. Alimentam os combos. |
+| `HistoricoController.java:62-100` | `inserir`, `atualizar` e `eliminar`. |
+| `HistoricoController.java:102-134` | `montar`, com as regras de negócio. Linha 108: o minuto não pode ser negativo. Linhas 113-117: não pode passar da duração do título. Linhas 119-122: só marca como concluído quem parou no último minuto. Linhas 123-126: quem chegou ao fim precisa estar como concluído. Tudo isso só vale se a duração não for `null` (séries ficam de fora). |
+| `TelaHistorico.java:47-57` | Construtor. As colunas Início, Última visualização, Conta e Plano são só de exibição e ficam no fim da tabela. |
+| `TelaHistorico.java:59-63` | `carregarCombos`. Preenche os combos de perfil e título. |
+| `TelaHistorico.java:66-77` | `carregarTabela`. Cada objeto da lista do JOIN vira uma linha, com "1 - Ana" e "1 - Stranger Things". |
+| `TelaHistorico.java:94-100` | `acrescentarBotoes`. Cria o botão **Relatório** (linha 97), que abre a `TelaRelatorio` pelo `Navegador` (linha 98). |
+| `TelaHistorico.java:102-105` | `definirPadroes`. O minuto de parada começa em `0`. |
 
 **Relatório**
 
 | Onde | O que faz |
 |---|---|
-| `HistoricoVisualizacaoDAO.java:91-116` | `listarPorPeriodo`. `DATE(h.data_inicio)` tira a hora, e `BETWEEN ? AND ?` inclui as duas pontas (linha 93). O filtro por perfil só entra no SQL se `idPerfil > 0` (linhas 94-96 e 105-107). Zero significa "todos". |
-| `RelatorioController.java:33-45` | `opcoesPerfis`. "Todos" mais "id - nome" de cada perfil. |
-| `RelatorioController.java:51-64` | `gerar`. Converte as datas, rejeita data final anterior à inicial (linhas 54-56) e transforma "Todos" em `0`. |
-| `RelatorioController.java:67-80` | `resumo`. Total, concluídas, em andamento (total menos concluídas) e minutos assistidos. |
-| `RelatorioController.java:83-107` | `salvarTxt`. Monta o texto com `StringBuilder` e grava em UTF-8 com `Files.write`. |
-| `TelaRelatorio.java:57-63` | O modelo da tabela, só de leitura. |
-| `TelaRelatorio.java:65-72` | Guarda o último resultado e os filtros usados. O `.txt` usa esses valores (não o que está digitado agora), senão teria linhas de um período e cabeçalho de outro. |
-| `TelaRelatorio.java:74-100` | Construtor. A data final começa como hoje (linha 78), liga os botões (82-83) e já abre mostrando o relatório do período padrão (96). |
-| `TelaRelatorio.java:103-122` | `gerar`. Pede ao Controller, captura `RuntimeException` para mostrar o erro, guarda o filtro e preenche a tabela e o resumo. |
-| `TelaRelatorio.java:125-133` | `salvar`. Abre o `JFileChooser` e entrega o caminho ao Controller. |
+| `HistoricoVisualizacaoDAO.java:79-104` | `listarPorPeriodo`. `DATE(h.data_inicio)` tira a hora, e `BETWEEN ? AND ?` inclui as duas pontas (linha 81). O filtro por perfil só entra no SQL se `idPerfil > 0` (linhas 82-84 e 93-95). Zero significa "todos". |
+| `RelatorioController.java:30-42` | `opcoesPerfis`. "Todos" mais "id - nome" de cada perfil. |
+| `RelatorioController.java:47-60` | `gerar`. Converte as datas, rejeita data final anterior à inicial (linhas 50-52) e transforma "Todos" em `0`. |
+| `RelatorioController.java:63-76` | `resumo`. Total, concluídas, em andamento (total menos concluídas) e minutos assistidos. |
+| `RelatorioController.java:79-103` | `salvarTxt`. Monta o texto com `StringBuilder` e grava em UTF-8 com `Files.write`. |
+| `TelaRelatorio.java:54-60` | O modelo da tabela, só de leitura. |
+| `TelaRelatorio.java:62-69` | Guarda o último resultado e os filtros usados. O `.txt` usa esses valores (não o que está digitado agora), senão teria linhas de um período e cabeçalho de outro. |
+| `TelaRelatorio.java:71-97` | Construtor. A data final começa como hoje (linha 75), liga os botões (79-80) e já abre mostrando o relatório do período padrão (93). |
+| `TelaRelatorio.java:100-119` | `gerar`. Pede ao Controller, captura `RuntimeException` para mostrar o erro, guarda o filtro e preenche a tabela e o resumo. |
+| `TelaRelatorio.java:122-130` | `salvar`. Abre o `JFileChooser` e entrega o caminho ao Controller. |
 
 ### Parte do banco
 
@@ -379,34 +379,34 @@ Ajuste as frases ao que você de fato fez.
 
 | Peça | Onde |
 |---|---|
-| O INNER JOIN de 5 tabelas | `dao/HistoricoVisualizacaoDAO.java:38-47` |
-| INNER JOIN simples (Conta e Perfil) | `dao/ContaDAO.java:41-44`, `dao/PerfilDAO.java:36-39` |
-| Classe abstrata | `view/TelaCrud.java:39` |
-| Métodos abstratos (Template Method) | `view/TelaCrud.java:91-100` |
-| Ganchos opcionais | `view/TelaCrud.java:103-112` |
+| O INNER JOIN de 5 tabelas | `dao/HistoricoVisualizacaoDAO.java:28-37` |
+| INNER JOIN simples (Conta e Perfil) | `dao/ContaDAO.java:38-41`, `dao/PerfilDAO.java:34-37` |
+| Classe abstrata | `view/TelaCrud.java:37` |
+| Métodos abstratos (Template Method) | `view/TelaCrud.java:87-96` |
+| Ganchos opcionais | `view/TelaCrud.java:99-108` |
 | Herança (`extends TelaCrud`) | `view/TelaConta.java:23` (e as outras 4 telas) |
 | Polimorfismo (`@Override`) | `view/TelaConta.java:70-85` |
-| Botões chamando o Controller | `view/TelaCrud.java:176-179` |
-| Mensagem de resultado e limpeza do formulário | `view/TelaCrud.java:233-237` |
-| Regra do valor do plano | `controller/PlanoController.java:113` |
-| Descrição automática do plano | `controller/PlanoController.java:94-107` |
-| Regra do país da conta | `controller/ContaController.java:102-105` |
+| Botões chamando o Controller | `view/TelaCrud.java:166-169` |
+| Mensagem de resultado e limpeza do formulário | `view/TelaCrud.java:222-226` |
+| Regra do valor do plano | `controller/PlanoController.java:103` |
+| Descrição automática do plano | `controller/PlanoController.java:84-97` |
+| Regra do país da conta | `controller/ContaController.java:99-102` |
 | Regra do PIN | `controller/PerfilController.java:82` |
-| Duração nula (Título) | `controller/TituloController.java:73`, `dao/TituloDAO.java:76-79` e `119-125` |
-| Regra do minuto de parada | `controller/HistoricoController.java:111-129` |
-| Erro 1451 | `controller/ContaController.java:79`, `controller/PlanoController.java:78` |
-| Erros 1062 e 1452 | `controller/ContaController.java:91-96` |
-| `PreparedStatement` | qualquer DAO, por exemplo `dao/PlanoDAO.java:48-49` |
-| `try-with-resources` | `dao/PlanoDAO.java:48-49` |
-| Explicação de `PreparedStatement` e `try-with-resources` | `dao/PlanoDAO.java:13-40` |
-| `WHERE` do UPDATE | `dao/PlanoDAO.java:94`, `dao/HistoricoVisualizacaoDAO.java:122` |
-| Relatório por período | `dao/HistoricoVisualizacaoDAO.java:91-116` |
-| Totais do relatório | `controller/RelatorioController.java:67-80` |
-| Exportação para `.txt` | `controller/RelatorioController.java:83-107` |
-| Botão **Relatório** no Histórico | `view/TelaHistorico.java:99-105` |
-| Criação do banco | `util/CriadorBanco.java:30-34` e `63-77` |
-| Conversão e validação de texto | `util/Conversor.java:32-71` |
-| Texto "id - nome" dos combos | `util/Conversor.java:87-100` |
+| Duração nula (Título) | `controller/TituloController.java:73`, `dao/TituloDAO.java:73-75` e `115-120` |
+| Regra do minuto de parada | `controller/HistoricoController.java:108-126` |
+| Erro 1451 | `controller/ContaController.java:79`, `controller/PlanoController.java:70` |
+| Erros 1062 e 1452 | `controller/ContaController.java:88-93` |
+| `PreparedStatement` | qualquer DAO, por exemplo `dao/PlanoDAO.java:30-31` |
+| `try-with-resources` | `dao/PlanoDAO.java:30-31` |
+| Explicação de `PreparedStatement` e `try-with-resources` | `dao/PlanoDAO.java:13-22` |
+| `WHERE` do UPDATE | `dao/PlanoDAO.java:76`, `dao/HistoricoVisualizacaoDAO.java:110` |
+| Relatório por período | `dao/HistoricoVisualizacaoDAO.java:79-104` |
+| Totais do relatório | `controller/RelatorioController.java:63-76` |
+| Exportação para `.txt` | `controller/RelatorioController.java:79-103` |
+| Botão **Relatório** no Histórico | `view/TelaHistorico.java:94-100` |
+| Criação do banco | `util/CriadorBanco.java:26-30` e `55-68` |
+| Conversão e validação de texto | `util/Conversor.java:30-69` |
+| Texto "id - nome" dos combos | `util/Conversor.java:84-94` |
 | Script do banco | `Netflix/sql/netflix.sql` |
 | `ON DELETE CASCADE` | `Netflix/sql/netflix.sql:87-88` |
 | `UNIQUE` do e-mail | `Netflix/sql/netflix.sql:33` |
